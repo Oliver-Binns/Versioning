@@ -23,44 +23,52 @@ jobs:
         with:
           fetch-depth: 0
     
-      - name: Fetch latest GitHub release tag
-        id: get_tag
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const release = await github.rest.repos.getLatestRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            })
-            return release.data.tag_name
-          result-encoding: string
+      #- name: Fetch latest GitHub release tag
+      #  id: get_tag
+      #  uses: actions/github-script@v6
+      #  with:
+      #    script: |
+      #      const release = await github.rest.repos.getLatestRelease({
+      #        owner: context.repo.owner,
+      #        repo: context.repo.repo
+      #      })
+      #      return release.data.tag_name
+      #    result-encoding: string
+      
+      # --initial-version ${{steps.get-tag.outputs.result}} \
     
       - name: Determine release increment
         id: determine_version_number
-        run:
-          echo "version_number=2.0.0" >> $GITHUB_OUTPUT
-          #swift run Run increment \
-          #  --initialVersion "${{ steps.get-tag.outputs.result }}" \
-          #  --messages "${{ github.event.pull_request.title }}"
+        run: |
+          swift build
+        
+          version_number=$(swift run --skip-build Run increment \
+            --initial-version "0.0.1" \
+            -m "test: 123" -m "test: 223" \
+          )
+                      
+          echo "version_number="$version_number >> $GITHUB_OUTPUT
         
       - name: Push new Git tag for release
         uses: actions/github-script@v6
         with:
           script: |
-            const tag_name = "${{steps.determine_version_number.outputs.version_number}}"
+            const tag_name = "${{steps.determine_version_number.outputs.version_number}}";
+            const ref = 'refs/tags/' + tag_name;
+            const release_name = 'v' + tag_name;
           
-            github.rest.git.createRef({
+            await github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/' + tag_name,
+              ref: ref,
               sha: context.sha
             })
             
-            github.rest.repos.createRelease({
+            await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: tag_name,
-              name: 'v' + tag_name,
+              name: release_name,
               draft: false,
               prerelease: false
             })
