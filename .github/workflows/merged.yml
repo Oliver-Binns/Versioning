@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
     
       - name: Fetch latest GitHub release tag
-        id: get-tag
+        id: get_tag
         uses: actions/github-script@v6
         with:
           script: |
@@ -29,16 +29,15 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo
             })
-            console.log(release)
-            return release['tag_name']
+            return release.data.tag_name
           result-encoding: string
     
       - name: Determine release increment
         run:
-          echo ${{ steps.get-tag.outputs.result }}
-          swift run Run increment \
-            --initialVersion "${{ steps.get-tag.outputs.result }}" \
-            --messages "${{ github.event.pull_request.title }}"
+          echo "${{steps.get_tag.outputs.result}}"
+          #swift run Run increment \
+          #  --initialVersion "${{ steps.get-tag.outputs.result }}" \
+          #  --messages "${{ github.event.pull_request.title }}"
         
       - name: Push new Git tag for release
         uses: actions/github-script@v6
