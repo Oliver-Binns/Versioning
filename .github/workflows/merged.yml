@@ -33,8 +33,9 @@ jobs:
           result-encoding: string
     
       - name: Determine release increment
+        id: determine_version_number
         run:
-          echo "${{steps.get_tag.outputs.result}}"
+          echo "version_number=2.0.0" >> $GITHUB_OUTPUT
           #swift run Run increment \
           #  --initialVersion "${{ steps.get-tag.outputs.result }}" \
           #  --messages "${{ github.event.pull_request.title }}"
@@ -43,7 +44,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const tag_name = 'v' + tag;
+            const tag_name = "${{steps.determine_version_number.outputs.version_number}}"
           
             github.rest.git.createRef({
               owner: context.repo.owner,
@@ -56,7 +57,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: tag_name,
-              name: '',
+              name: 'v' + tag_name,
               draft: false,
               prerelease: false
             })
