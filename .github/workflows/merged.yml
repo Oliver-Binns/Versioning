@@ -25,10 +25,12 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            return github.rest.repos.getLatestRelease({
+            const release = github.rest.repos.getLatestRelease({
               owner: context.repo.owner,
               repo: context.repo.repo
-            }).tag_name
+            })
+            console.log(release)
+            return release['tag_name']
           result-encoding: string
     
       - name: Determine release increment
