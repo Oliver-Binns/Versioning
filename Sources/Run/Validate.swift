@@ -2,12 +2,11 @@ import ArgumentParser
 import Versioning
 
 struct Validate: ParsableCommand {
-    mutating func run() throws {
-        print("hi")
-        
-    }
+    @Option(name: .shortAndLong, help: "A commit message to validate")
+    private var message: String
     
-    static func validateCommits(messages: [String]) throws {
-        _ = try messages.map(Commit.init)
+    mutating func run() throws {
+        _ = try Commit(string: message)
+        print("Validated commit message (\(message)) successfully")
     }
 }

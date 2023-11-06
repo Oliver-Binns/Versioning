@@ -29,14 +29,14 @@ final class CommitTests: XCTestCase {
         do {
             _ = try Commit(string: "invalid: adding-optional-initialiser-for-icon")
             XCTFail("Expected error to be thrown")
-        } catch CommitError.invalidPrefix { }
+        } catch CommitFormatError.invalidPrefix { }
     }
     
     func testThrowsInvalidStructureError() throws {
         do {
             _ = try Commit(string: "feat with no colon / message")
             XCTFail("Expected error to be thrown")
-        } catch CommitError.invalidStructure { }
+        } catch CommitFormatError.invalid { }
     }
     
     func testVersionIncrementValues() throws {

@@ -1,8 +1,3 @@
-enum CommitError: Error {
-    case invalidStructure
-    case invalidPrefix
-}
-
 public struct Commit {
     public let type: CommitType
     public let isBreakingChange: Bool
@@ -19,7 +14,7 @@ public struct Commit {
     public init(string: String) throws {
         let components = string.split(separator: ": ")
         guard components.count == 2 else {
-            throw CommitError.invalidStructure
+            throw CommitFormatError.invalid
         }
     
         self.isBreakingChange = components[0].last == "!"
@@ -31,7 +26,7 @@ public struct Commit {
         } else if let type = CommitType(rawValue: String(components[0])) {
             self.type = type
         } else {
-            throw CommitError.invalidPrefix
+            throw CommitFormatError.invalidPrefix(components[0])
         }
         
         message = String(components[1])

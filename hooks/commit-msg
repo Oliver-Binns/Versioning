@@ -1,0 +1,4 @@
+#!/bin/sh
+
+commit_message=$(head -1 $1)
+swift run Run --message "$commit_message"
