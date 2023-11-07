@@ -20,7 +20,7 @@ final class VersionTests: XCTestCase {
         XCTAssertGreaterThan(Version(1, 5, 5), Version(0, 14, 2))
         XCTAssertGreaterThan(Version(11, 0, 0), Version(10, 17, 1))
     }
-    
+
     func testIncrement() {
         XCTAssertEqual(Version.one.apply(increment: .major), Version(2, 0, 0))
         XCTAssertEqual(Version.one.apply(increment: .minor), Version(1, 1, 0))

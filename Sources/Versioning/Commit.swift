@@ -13,7 +13,7 @@ public struct Commit {
         self.isBreakingChange = isBreakingChange
         self.message = message
     }
-    
+
     public init(string: String) throws {
         let search = /(?<type>[a-z]+)(\((?<scope>[a-z]+)\))?(?<breaking>!)?: (?<message>(.|\n)+)/
 
@@ -38,7 +38,7 @@ extension Commit {
         guard !isBreakingChange else {
             return .major
         }
-        
+
         switch type {
         case .feature:
             return .minor

@@ -8,7 +8,7 @@ final class CommitTests: XCTestCase {
         XCTAssertFalse(commit.isBreakingChange)
         XCTAssertEqual(commit.message, "adding-optional-initialiser-for-icon")
     }
-    
+
     func testCommitTypes() throws {
         try CommitType.allCases.forEach {
             let message = "\($0.rawValue): commit message here"
@@ -16,7 +16,7 @@ final class CommitTests: XCTestCase {
             XCTAssertEqual($0, commit.type)
         }
     }
-    
+
     func testBreakingChange() throws {
         try CommitType.allCases.forEach {
             let message = "\($0.rawValue)!: commit message here"
@@ -24,7 +24,7 @@ final class CommitTests: XCTestCase {
             XCTAssertEqual($0, commit.type)
         }
     }
-    
+
     func testSquashedCommits() throws {
         let commit = try Commit(string: """
 feat: DCMAW-7932 Automate Versioning (#50)
@@ -45,7 +45,7 @@ DCMAW-7932 Automate Versioning (#50)
 * chore: moved validate job to before build and test action
 """)
     }
-    
+
     func testThrowsInvalidPrefixError() throws {
         do {
             _ = try Commit(string: "invalid: adding-optional-initialiser-for-icon")
@@ -53,8 +53,8 @@ DCMAW-7932 Automate Versioning (#50)
         } catch CommitFormatError.invalidPrefix(let string) {
             XCTAssertEqual(string, "invalid")
         }
-    }   
-    
+    }
+
     func testThrowsInvalidPrefixErrorDescription() throws {
         do {
             _ = try Commit(string: "invalid: adding-optional-initialiser-for-icon")
@@ -63,7 +63,7 @@ DCMAW-7932 Automate Versioning (#50)
             XCTAssertTrue(error.description.contains("\"invalid\" is not an allowed commit prefix."))
         }
     }
-    
+
     func testThrowsInvalidStructureError() throws {
         do {
             _ = try Commit(string: "feat with no colon / message")
@@ -71,8 +71,8 @@ DCMAW-7932 Automate Versioning (#50)
         } catch CommitFormatError.invalid(let string) {
             XCTAssertEqual(string, "feat with no colon / message")
         }
-    }   
-    
+    }
+
     func testThrowsInvalidStructureErrorDescription() throws {
         do {
             _ = try Commit(string: "feat with no colon / message")
@@ -81,18 +81,18 @@ DCMAW-7932 Automate Versioning (#50)
             XCTAssertTrue(error.description.contains("Invalid commit message format: feat with no colon / message"))
         }
     }
-    
+
     func testVersionIncrementValues() throws {
         try XCTAssertEqual(
             Commit(string: "feat!: adding-optional-initialiser-for-icon").versionIncrement,
             .major
         )
-        
+
         try XCTAssertEqual(
             Commit(string: "feat: adding-optional-initialiser-for-icon").versionIncrement,
             .minor
         )
-        
+
         try XCTAssertEqual(
             Commit(string: "fix: adding-optional-initialiser-for-icon").versionIncrement,
             .patch

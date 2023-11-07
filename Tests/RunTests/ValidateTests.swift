@@ -29,7 +29,7 @@ struct ValidateTests {
 
             Issue.record("Expected a `breakingChangeNotFlagged` error to be thrown")
         } catch ValidationError.breakingChangeNotFlagged {
-            
+
         }
     }
 
