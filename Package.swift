@@ -12,15 +12,16 @@ let package = Package(
         .tvOS(.v16)
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.2.3"))
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.2.3")),
+        .package(url: "https://github.com/realm/swiftlint.git", .upToNextMinor(from: "0.53.0"))
     ],
     targets: [
         .executableTarget(name: "Run", dependencies: [
             "Versioning",
             .product(name: "ArgumentParser", package: "swift-argument-parser")
         ]),
-        
-        .target(name: "Versioning"),
+
+        .target(name: "Versioning", plugins: [.plugin(name: "SwiftLintPlugin", package: "SwiftLint")]),
         .testTarget(name: "VersioningTests", dependencies: ["Versioning"])
     ]
 )

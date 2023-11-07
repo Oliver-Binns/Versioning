@@ -5,8 +5,7 @@ struct Increment: ParsableCommand {
     mutating func run() throws {
         print("hi")
     }
-    
-    
+
     static func calculateNewVersion(initialVersion: Version,
                                     commits: [Commit]) -> Version {
         commits
