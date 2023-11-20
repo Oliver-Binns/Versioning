@@ -51,6 +51,5 @@ runs:
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}})
         
-        echo $version
         echo "version=$version" >> $GITHUB_OUTPUT
         
