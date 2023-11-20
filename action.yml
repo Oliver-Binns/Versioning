@@ -1,0 +1,46 @@
+name: 'Release Version'
+description: 'Create new GitHub release using Conventional Commits'
+inputs:
+  GITHUB_TOKEN:
+    description: 'GitHub Actions token with write permissions, see docs: https://docs.github.com/en/actions/security-guides/automatic-token-authentication'
+    required: false
+  ACTION_TYPE:
+    description: 'Which type of action to perform.'
+    required: true
+    type: choice
+    options:
+    - Release
+    - Validate
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Clone Action
+      uses: actions/checkout@v4
+      with:
+        repository: Oliver-Binns/Versioning
+        path: $RUNNER_TEMP/Versioning
+        
+    - name: Build Package
+      working-directory: $RUNNER_TEMP/Versioning
+      shell: bash
+      run: swift build
+      
+    - name: Validate
+      if: ${{ inputs.ACTION_TYPE == 'Validate' }}
+      working-directory: $RUNNER_TEMP/Versioning
+      shell: bash
+      run: |
+       swift run --skip-build Run validate \
+         --message "${{ github.event.pull_request.title }}"
+      
+    - name: Release
+      if: ${{ inputs.ACTION_TYPE == 'Release' }}
+      working-directory: $RUNNER_TEMP/Versioning
+      shell: bash
+      run: |
+        swift run --skip-build Run increment \
+          --repository $GITHUB_REPOSITORY \
+          --sha $GITHUB_SHA \
+          --token ${{inputs.GITHUB_TOKEN}}
+        
