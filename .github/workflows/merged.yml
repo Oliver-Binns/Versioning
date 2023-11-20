@@ -30,7 +30,7 @@ jobs:
         
           version_number=$(swift run --skip-build Run increment \
             --repository $GITHUB_REPOSITORY \
-            --sha $GITHUB_SHA
+            --sha $GITHUB_SHA \
             --token ${{ secrets.GITHUB_TOKEN }} \
             --messages "fix: 123" \
           )
