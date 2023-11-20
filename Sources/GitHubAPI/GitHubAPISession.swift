@@ -26,10 +26,24 @@ public final class GitHubAPISession {
     }
     
     public func latestRelease() async throws -> GitHubReleaseResponse {
-        let (data, _) = try await session
+        let (data, response) = try await session
             .data(from: .latestRelease(repository: repository))
-        return try JSONDecoder()
-            .decode(GitHubReleaseResponse.self, from: data)
+        
+        guard let response = response as? HTTPURLResponse else {
+            throw GitHubAPIError.unknown
+        }
+
+        switch response.statusCode {
+        case _ where response.statusCode.isSuccessful:
+            return try JSONDecoder()
+                .decode(GitHubReleaseResponse.self, from: data)
+        case 404:
+            throw GitHubAPIError.notFound
+        default:
+            throw GitHubAPIError.unknown
+        }
+        
+        
     }
     
     public func compare(base: String, head: String) async throws -> [String] {
