@@ -17,17 +17,8 @@ jobs:
       contents: write
       
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Create GitHub release
+        uses: Oliver-Binns/Versioning@main
         with:
-          fetch-depth: 0
-    
-      - name: Determine release increment
-        id: determine_version_number
-        run: |
-          swift build
-        
-          swift run --skip-build Run increment \
-            --repository $GITHUB_REPOSITORY \
-            --sha $GITHUB_SHA \
-            --token ${{ secrets.GITHUB_TOKEN }}
+          ACTION_TYPE: 'Release'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
