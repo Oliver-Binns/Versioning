@@ -15,9 +15,13 @@ struct Increment: AsyncParsableCommand {
     mutating func run() async throws {
         let session = GitHubAPISession(repository: repository, apiToken: token)
         let initialVersion = try await fetchVersion(session: session)
-        let newVersion = try await incrementVersion(initialVersion, session: session).description
-        try await session.createReference(version: newVersion, sha: sha)
-        try await session.createRelease(version: newVersion)
+        let newVersion = try await incrementVersion(initialVersion, session: session)
+        guard newVersion > initialVersion else {
+            print("Nothing to do: no significant changes made")
+            return
+        }
+        try await session.createReference(version: newVersion.description, sha: sha)
+        try await session.createRelease(version: newVersion.description)
     }
  
     private func fetchVersion(session: GitHubAPISession) async throws -> Version {
