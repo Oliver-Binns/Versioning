@@ -35,11 +35,11 @@ public struct Version: CustomStringConvertible {
     public func apply(increment: VersionIncrement) -> Version {
         switch increment {
         case .major:
-            Version(major + 1, 0, 0)
+            return Version(major + 1, 0, 0)
         case .minor:
-            Version(major, minor + 1, 0)
+            return Version(major, minor + 1, 0)
         case .patch:
-            Version(major, minor, self.increment + 1)
+            return Version(major, minor, self.increment + 1)
         }
     }
 }

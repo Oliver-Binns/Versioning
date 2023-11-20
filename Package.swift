@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 5.8.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -17,10 +17,17 @@ let package = Package(
     targets: [
         .executableTarget(name: "Run", dependencies: [
             "Versioning",
+            "GitHubAPI",
             .product(name: "ArgumentParser", package: "swift-argument-parser")
         ]),
+        .testTarget(name: "RunTests", dependencies: ["Run"]),
         
         .target(name: "Versioning"),
-        .testTarget(name: "VersioningTests", dependencies: ["Versioning"])
+        .testTarget(name: "VersioningTests", dependencies: ["Versioning"]),
+        
+        .target(name: "GitHubAPI"),
+        .testTarget(name: "GitHubAPITests",
+                    dependencies: ["GitHubAPI"],
+                    resources: [.process("Responses")])
     ]
 )
