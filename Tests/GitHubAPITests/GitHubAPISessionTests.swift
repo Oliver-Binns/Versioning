@@ -44,7 +44,7 @@ extension GitHubAPISessionTests {
         XCTAssertEqual(release.tagName, "v1.0.0")
     }
     
-    func testCreateTag() async throws {
+    func testCreateReference() async throws {
         let version = UUID().uuidString
         let sha = UUID().uuidString
         
@@ -61,7 +61,7 @@ extension GitHubAPISessionTests {
             
         }
         
-        try await sut.createTag(version: version, sha: sha)
+        try await sut.createReference(version: version, sha: sha)
     }
     
     func testCreateRelease() async throws {

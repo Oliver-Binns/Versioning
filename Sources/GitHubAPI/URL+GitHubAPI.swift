@@ -23,9 +23,9 @@ extension URL {
             .appending(component: "latest")
     }
     
-    static func tags(repository: String) -> URL {
+    static func references(repository: String) -> URL {
         self.repository(repository: repository)
-            .appending(components: "git", "tags")
+            .appending(components: "git", "refs")
     }
     
     static func commits(repository: String) -> URL {

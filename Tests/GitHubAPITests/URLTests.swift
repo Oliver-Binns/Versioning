@@ -27,8 +27,8 @@ final class URLTests: XCTestCase {
     
     func testTagsURL() {
         XCTAssertEqual(
-            URL.tags(repository: repository).absoluteString,
-            "https://api.github.com/repos/octocat/Hello-World/git/tags"
+            URL.references(repository: repository).absoluteString,
+            "https://api.github.com/repos/octocat/Hello-World/git/refs"
         )
     }
 }

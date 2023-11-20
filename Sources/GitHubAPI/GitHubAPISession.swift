@@ -25,19 +25,18 @@ public final class GitHubAPISession {
     }
     
     public func latestRelease() async throws -> GitHubRelease {
-        let url = URL.latestRelease(repository: repository)
         let (data, _) = try await session
             .data(from: .latestRelease(repository: repository))
         return try JSONDecoder()
             .decode(GitHubRelease.self, from: data)
     }
     
-    public func createTag(version: String, sha: String) async throws {
+    public func createReference(version: String, sha: String) async throws {
         let reference = "refs/tags/\(version)"
         let requestObject = CreateReferenceRequest(ref: reference,
                                                    sha: sha)
         
-        var request = URLRequest(url: .tags(repository: repository))
+        var request = URLRequest(url: .references(repository: repository))
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
         

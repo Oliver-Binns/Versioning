@@ -20,8 +20,8 @@ struct Increment: AsyncParsableCommand {
         let initialVersion = try await fetchVersion(session: session)
         let newVersion = try incrementVersion(initialVersion).description
         print("New version to be published will be \(newVersion)")
-        try await session.createTag(version: newVersion, sha: sha)
-        print("Successfully created new tag")
+        try await session.createReference(version: newVersion, sha: sha)
+        print("Successfully created new reference")
         try await session.createRelease(version: newVersion)
         print("Successfully published new release")
     }
