@@ -31,5 +31,4 @@ jobs:
           swift run --skip-build Run increment \
             --repository $GITHUB_REPOSITORY \
             --sha $GITHUB_SHA \
-            --token ${{ secrets.GITHUB_TOKEN }} \
-            --messages "fix: 123"
+            --token ${{ secrets.GITHUB_TOKEN }}

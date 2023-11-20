@@ -25,11 +25,19 @@ public final class GitHubAPISession {
                   repository: repository, apiToken: apiToken)
     }
     
-    public func latestRelease() async throws -> GitHubRelease {
+    public func latestRelease() async throws -> GitHubReleaseResponse {
         let (data, _) = try await session
             .data(from: .latestRelease(repository: repository))
         return try JSONDecoder()
-            .decode(GitHubRelease.self, from: data)
+            .decode(GitHubReleaseResponse.self, from: data)
+    }
+    
+    public func compare(base: String, head: String) async throws -> [String] {
+        let (data, _) = try await session
+            .data(from: .compare(repository: repository, base: base, head: head))
+        return try JSONDecoder()
+            .decode(GitHubCompareResponse.self, from: data)
+            .commits.map(\.commit).map(\.message)
     }
     
     public func createReference(version: String, sha: String) async throws {
@@ -41,10 +49,7 @@ public final class GitHubAPISession {
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
         
-        let (data, _) = try await session.data(for: request)
-        if let response = String(data: data, encoding: .utf8) {
-            print("attempt create tag", response)
-        }
+        _ = try await session.data(for: request)
     }
     
     public func createRelease(version: String) async throws {
@@ -61,10 +66,7 @@ public final class GitHubAPISession {
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
         
-        let (data, _) = try await session.data(for: request)
-        if let response = String(data: data, encoding: .utf8) {
-            print("attempt create tag", response)
-        }
+        _ = try await session.data(for: request)
     }
 }
 

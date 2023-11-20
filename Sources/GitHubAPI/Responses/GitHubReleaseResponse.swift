@@ -1,6 +1,6 @@
 import Foundation
 
-public struct GitHubRelease: Decodable {
+public struct GitHubReleaseResponse: Decodable {
     public let tagName: String
     
     enum CodingKeys: String, CodingKey {

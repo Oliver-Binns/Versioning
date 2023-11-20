@@ -28,8 +28,10 @@ extension URL {
             .appending(components: "git", "refs")
     }
     
-    static func commits(repository: String) -> URL {
+    static func compare(repository: String,
+                        base: String, head: String) -> URL {
         self.repository(repository: repository)
-            .appending(component: "commits")
+            .appending(components: "compare", "\(base)...\(head)")
+    
     }
 }

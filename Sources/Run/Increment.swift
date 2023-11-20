@@ -12,18 +12,12 @@ struct Increment: AsyncParsableCommand {
     @Option(name: .shortAndLong, help: "A token that you can use to authenticate on behalf of GitHub Actions")
     private var token: String
     
-    @Option(name: .shortAndLong, help: "A commit message to validate")
-    private var messages: [String]
-    
     mutating func run() async throws {
         let session = GitHubAPISession(repository: repository, apiToken: token)
         let initialVersion = try await fetchVersion(session: session)
-        let newVersion = try incrementVersion(initialVersion).description
-        print("New version to be published will be \(newVersion)")
+        let newVersion = try await incrementVersion(initialVersion, session: session).description
         try await session.createReference(version: newVersion, sha: sha)
-        print("Successfully created new reference")
         try await session.createRelease(version: newVersion)
-        print("Successfully published new release")
     }
  
     private func fetchVersion(session: GitHubAPISession) async throws -> Version {
@@ -31,8 +25,9 @@ struct Increment: AsyncParsableCommand {
         return Version(string: release.tagName) ?? Version(0, 0, 0)
     }
     
-    private func incrementVersion(_ initialVersion: Version) throws -> Version {
-        try messages
+    private func incrementVersion(_ initialVersion: Version, session: GitHubAPISession) async throws -> Version {
+        try await session
+            .compare(base: initialVersion.description, head: sha)
             .map(Commit.init)
             .compactMap(\.versionIncrement)
             .reduce(initialVersion) { version, increment in
