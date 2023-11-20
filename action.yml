@@ -46,8 +46,10 @@ runs:
       working-directory: $RUNNER_TEMP/Versioning
       shell: bash
       run: |
-        swift run --skip-build Run increment \
+        version=$(swift run --skip-build Run increment \
           --repository $GITHUB_REPOSITORY \
           --sha $GITHUB_SHA \
-          --token ${{inputs.GITHUB_TOKEN}}
+          --token ${{inputs.GITHUB_TOKEN}})
+          
+        echo "release_version=$(echo $version)" >> $GITHUB_OUTPUT
         
