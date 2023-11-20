@@ -2,24 +2,27 @@ import GitHubAPI
 import Versioning
 
 struct Releaser {
-    let session: APISession
+    private let session: APISession
+    private let verbose: Bool
     
-    init(session: APISession) {
+    init(session: APISession, verbose: Bool = false) {
         self.session = session
+        self.verbose = verbose
     }
     
-    func makeRelease(sha: String) async throws {
+    func makeRelease(sha: String) async throws -> Version? {
         let (initialVersion, commits) = try await fetchCommits(sha: sha)
         let newVersion = try incrementVersion(initialVersion, commits: commits)
         
         guard newVersion > initialVersion else {
-            print("Nothing to do: no significant changes made")
-            return
+            log("Nothing to do: no significant changes made")
+            return nil
         }
         
         try await session.createReference(version: newVersion.description, sha: sha)
         try await session.createRelease(version: newVersion.description)
-        print("Released new version: \(newVersion)")
+        log("Released new version: \(newVersion)")
+        return newVersion
     }
     
     private func fetchCommits(sha: String) async throws -> (initial: Version, commits: [String]) {
@@ -28,7 +31,7 @@ struct Releaser {
             let commits = try await session.compare(base: initialVersion.description, head: sha)
             return (initialVersion, commits)
         } catch GitHubAPIError.notFound {
-            print("No previous release found, comparing to previous commit")
+            log("No previous release found, comparing to previous commit")
             let commits = try await session.compare(base: "HEAD^", head: sha)
             return (
                 Version(0, 0, 0),
@@ -49,5 +52,10 @@ struct Releaser {
             .reduce(initialVersion) { version, increment in
                 version.apply(increment: increment)
             }
+    }
+    
+    private func log(_ values: String...) {
+        guard verbose else { return }
+        print(values)
     }
 }

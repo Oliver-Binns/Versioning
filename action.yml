@@ -1,5 +1,6 @@
 name: 'Release Version'
 description: 'Create new GitHub release using Conventional Commits'
+
 inputs:
   GITHUB_TOKEN:
     description: 'GitHub Actions token with write permissions, see docs: https://docs.github.com/en/actions/security-guides/automatic-token-authentication'
@@ -12,6 +13,11 @@ inputs:
     - Release
     - Validate
     
+outputs:
+  release_version:
+    description: "Release version in semantic format; e.g. 1.0.0"
+    value: ${{ steps.release.outputs.version }}
+
 runs:
   using: "composite"
   steps:
@@ -35,6 +41,7 @@ runs:
          --message "${{ github.event.pull_request.title }}"
       
     - name: Release
+      id: release
       if: ${{ inputs.ACTION_TYPE == 'Release' }}
       working-directory: $RUNNER_TEMP/Versioning
       shell: bash
