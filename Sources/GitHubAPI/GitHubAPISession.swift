@@ -25,6 +25,8 @@ public final class GitHubAPISession {
     }
     
     public func latestRelease() async throws -> GitHubRelease {
+        let url = URL.latestRelease(repository: repository)
+        print("making API call to \(url)")
         let (data, _) = try await session
             .data(from: .latestRelease(repository: repository))
         return try JSONDecoder()
