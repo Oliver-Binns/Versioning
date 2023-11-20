@@ -28,8 +28,8 @@ struct Releaser {
             let commits = try await session.compare(base: initialVersion.description, head: sha)
             return (initialVersion, commits)
         } catch GitHubAPIError.notFound {
-            print("No previous release found, comparing to HEAD")
-            let commits = try await session.compare(base: "HEAD", head: sha)
+            print("No previous release found, comparing to previous commit")
+            let commits = try await session.compare(base: "HEAD^", head: sha)
             return (
                 Version(0, 0, 0),
                 commits
