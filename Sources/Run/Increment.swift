@@ -2,7 +2,6 @@ import ArgumentParser
 import GitHubAPI
 import Versioning
 
-
 struct Increment: AsyncParsableCommand {
     @Option(name: .shortAndLong, help: "The owner and repository name. For example, octocat/Hello-World.")
     private var repository: String
