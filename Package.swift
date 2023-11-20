@@ -17,10 +17,16 @@ let package = Package(
     targets: [
         .executableTarget(name: "Run", dependencies: [
             "Versioning",
+            "GitHubAPI",
             .product(name: "ArgumentParser", package: "swift-argument-parser")
         ]),
         
         .target(name: "Versioning"),
-        .testTarget(name: "VersioningTests", dependencies: ["Versioning"])
+        .testTarget(name: "VersioningTests", dependencies: ["Versioning"]),
+        
+        .target(name: "GitHubAPI"),
+        .testTarget(name: "GitHubAPITests",
+                    dependencies: ["GitHubAPI"],
+                    resources: [.process("Responses")])
     ]
 )

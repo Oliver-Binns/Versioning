@@ -23,51 +23,14 @@ jobs:
         with:
           fetch-depth: 0
     
-      - name: Fetch latest GitHub release tag
-        id: get_tag
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const release = await github.rest.repos.getLatestRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            })
-            return release.data.tag_name
-          result-encoding: string
-    
       - name: Determine release increment
         id: determine_version_number
         run: |
           swift build
         
           version_number=$(swift run --skip-build Run increment \
-            --initial-version ${{steps.get_tag.outputs.result}} \
-            -m "fix: 123" \
+            --repository $GITHUB_REPOSITORY \
+            --sha $GITHUB_SHA
+            --token ${{ secrets.GITHUB_TOKEN }} \
+            --messages "fix: 123" \
           )
-                      
-          echo "version_number="$version_number >> $GITHUB_OUTPUT
-        
-      - name: Push new Git tag for release
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const tag_name = "${{steps.determine_version_number.outputs.version_number}}";
-            const ref = 'refs/tags/' + tag_name;
-            const release_name = 'v' + tag_name;
-          
-            await github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: ref,
-              sha: context.sha
-            })
-            
-            await github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: tag_name,
-              name: release_name,
-              draft: false,
-              prerelease: false,
-              generate_release_notes: true
-            })

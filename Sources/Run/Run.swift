@@ -1,9 +1,9 @@
 import ArgumentParser
 
 @main
-struct Run: ParsableCommand {
+struct Run: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
-        abstract: "Word counter.",
+        abstract: "Version enforcer",
         subcommands: [Validate.self, Increment.self],
         defaultSubcommand: Validate.self
     )
