@@ -9,7 +9,7 @@ final class ReleaserTests: XCTestCase {
         let sut = Releaser(session: session)
         try await sut.makeRelease(sha: sha)
         
-        XCTAssertEqual(session.didCallCompare?.0, "HEAD")
+        XCTAssertEqual(session.didCallCompare?.0, "HEAD^")
         XCTAssertEqual(session.didCallCompare?.1, sha)
         
         XCTAssertEqual(session.didCallCreateReference?.0, "0.2.1")
