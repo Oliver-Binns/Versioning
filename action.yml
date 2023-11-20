@@ -11,7 +11,10 @@ inputs:
     options:
     - Release
     - Validate
-    
+outputs:
+  release_version:
+    description: "Release version in semantic format; e.g. 1.0.0"
+    value: ${{ steps.release.outputs.version }}
 runs:
   using: "composite"
   steps:
@@ -35,12 +38,16 @@ runs:
          --message "${{ github.event.pull_request.title }}"
       
     - name: Release
+      id: release
       if: ${{ inputs.ACTION_TYPE == 'Release' }}
       working-directory: $RUNNER_TEMP/Versioning
       shell: bash
       run: |
-        swift run --skip-build Run increment \
+        version=$(swift run --skip-build Run increment \
           --repository $GITHUB_REPOSITORY \
           --sha $GITHUB_SHA \
-          --token ${{inputs.GITHUB_TOKEN}}
+          --token ${{inputs.GITHUB_TOKEN}})
+        
+        echo $version
+        echo "version=$version" >> $GITHUB_OUTPUT
         

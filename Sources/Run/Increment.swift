@@ -12,8 +12,14 @@ struct Increment: AsyncParsableCommand {
     @Option(name: .shortAndLong, help: "A token that you can use to authenticate on behalf of GitHub Actions")
     private var token: String
     
+    @Flag(name: .shortAndLong)
+    private var verbose = false
+    
     mutating func run() async throws {
         let session = GitHubAPISession(repository: repository, apiToken: token)
-        try await Releaser(session: session).makeRelease(sha: sha)
+        if let version = try await Releaser(session: session, verbose: verbose)
+            .makeRelease(sha: sha) {
+            print(version)
+        }
     }
 }
