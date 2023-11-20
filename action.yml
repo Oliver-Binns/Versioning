@@ -15,13 +15,21 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Clone Action
+      uses: actions/checkout@v4
+      with:
+        repository: Oliver-Binns/Versioning
+        path: $RUNNER_TEMP/Versioning
+      
     - name: Validate
       if: ${{inputs.ACTION_TYPE}} == 'Validate'
+      working-directory: $RUNNER_TEMP/Versioning
       shell: bash
       run: swift run Run --message "${{ github.event.pull_request.title }}"
       
     - name: Release
       if: ${{inputs.ACTION_TYPE}} == 'Release'
+      working-directory: $RUNNER_TEMP/Versioning
       shell: bash
       run: |
         swift run --skip-build Run increment \
