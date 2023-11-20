@@ -26,7 +26,6 @@ public final class GitHubAPISession {
     
     public func latestRelease() async throws -> GitHubRelease {
         let url = URL.latestRelease(repository: repository)
-        print("making API call to \(url)")
         let (data, _) = try await session
             .data(from: .latestRelease(repository: repository))
         return try JSONDecoder()
@@ -42,7 +41,10 @@ public final class GitHubAPISession {
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
         
-        _ = try await session.data(for: request)
+        let (data, _) = try await session.data(for: request)
+        if let response = String(data: data, encoding: .utf8) {
+            print("attempt create tag", response)
+        }
     }
     
     public func createRelease(version: String) async throws {
@@ -59,7 +61,10 @@ public final class GitHubAPISession {
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
         
-        _ = try await session.data(for: request)
+        let (data, _) = try await session.data(for: request)
+        if let response = String(data: data, encoding: .utf8) {
+            print("attempt create tag", response)
+        }
     }
 }
 
