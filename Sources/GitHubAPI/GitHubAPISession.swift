@@ -12,7 +12,8 @@ public final class GitHubAPISession {
          apiToken: String) {
         sessionConfiguration.httpAdditionalHeaders = [
             "Accept" : "application/vnd.github+json",
-            "Bearer" : apiToken
+            "Authorization" : "token \(apiToken)",
+            "Content-Type": "application/json"
         ]
         
         self.session = URLSession(configuration: sessionConfiguration)
