@@ -1,14 +1,14 @@
 import Foundation
 
-public struct GitHubCompareResponse: Decodable {
+struct GitHubCompareResponse: Decodable {
     let commits: [GitHubCommitDetails]
 }
 
-public struct GitHubCommitDetails: Decodable {
+struct GitHubCommitDetails: Decodable {
     let commit: GitHubCommit
     let url: URL
 }
 
-public struct GitHubCommit: Decodable {
+struct GitHubCommit: Decodable {
     let message: String
 }

@@ -20,6 +20,7 @@ let package = Package(
             "GitHubAPI",
             .product(name: "ArgumentParser", package: "swift-argument-parser")
         ]),
+        .testTarget(name: "RunTests", dependencies: ["Run"]),
         
         .target(name: "Versioning"),
         .testTarget(name: "VersioningTests", dependencies: ["Versioning"]),

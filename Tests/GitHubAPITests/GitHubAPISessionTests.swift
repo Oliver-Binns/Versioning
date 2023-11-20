@@ -41,7 +41,7 @@ extension GitHubAPISessionTests {
         }
         
         let release = try await sut.latestRelease()
-        XCTAssertEqual(release.tagName, "v1.0.0")
+        XCTAssertEqual(release, "v1.0.0")
     }
     
     func testCompare() async throws {

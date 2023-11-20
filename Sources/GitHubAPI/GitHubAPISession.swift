@@ -25,7 +25,7 @@ public final class GitHubAPISession {
                   repository: repository, apiToken: apiToken)
     }
     
-    public func latestRelease() async throws -> GitHubReleaseResponse {
+    public func latestRelease() async throws -> String {
         let (data, response) = try await session
             .data(from: .latestRelease(repository: repository))
         
@@ -37,6 +37,7 @@ public final class GitHubAPISession {
         case _ where response.statusCode.isSuccessful:
             return try JSONDecoder()
                 .decode(GitHubReleaseResponse.self, from: data)
+                .tagName
         case 404:
             throw GitHubAPIError.notFound
         default:
