@@ -20,6 +20,11 @@ runs:
       with:
         repository: Oliver-Binns/Versioning
         path: $RUNNER_TEMP/Versioning
+        
+    - name: Build Package
+      working-directory: $RUNNER_TEMP/Versioning
+      shell: bash
+      run: swift build
       
     - name: Validate
       if: ${{ inputs.ACTION_TYPE == 'Validate' }}
