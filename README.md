@@ -17,7 +17,8 @@ You can also use it to validate a list of commits when using merge commits or re
 steps:
   - uses: actions/checkout@v4
   
-  - id: Versioning
+  - name: Validate Pull Request Name
+    id: versioning
     uses: Oliver-Binns/Versioning@main
     with:
       ACTION_TYPE: 'Validate'
@@ -41,11 +42,19 @@ jobs:
 And pass the GitHub Token as a parameter:
 
 ```
-- id: Versioning
+- name: Increment Version
+  id: versioning
   uses: Oliver-Binns/Versioning@main
   with:
     ACTION_TYPE: 'Release'
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+The release action outputs the version number it has released.
+You can access it using the GitHub output values:
+
+```
+echo ${{ steps.versioning.outputs.release_version }}
 ```
 
 ### Swift Package Manager
