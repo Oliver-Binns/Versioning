@@ -2,7 +2,7 @@ name: Merged
 
 on:
   push:
-    branches: [ main, feature/publish-releases ]
+    branches: [ main ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
