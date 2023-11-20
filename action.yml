@@ -1,0 +1,31 @@
+name: 'Release Version'
+description: 'Create new GitHub release using Conventional Commits'
+inputs:
+  GITHUB_TOKEN:
+    description: 'GitHub Actions token with write permissions, see docs: https://docs.github.com/en/actions/security-guides/automatic-token-authentication'
+    required: false
+  ACTION_TYPE:
+    description: 'Which type of action to perform.'
+    required: true
+    type: choice
+    options:
+    - Release
+    - Validate
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Validate
+      if: $ACTION_TYPE == 'Validate'
+      shell: bash
+      run: swift run Run --message "${{ github.event.pull_request.title }}"
+      
+    - name: Release
+      if: $ACTION_TYPE == 'Release'
+      shell: bash
+      run: |
+        swift run --skip-build Run increment \
+          --repository $GITHUB_REPOSITORY \
+          --sha $GITHUB_SHA \
+          --token ${{ secrets.GITHUB_TOKEN }}
+        

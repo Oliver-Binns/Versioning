@@ -6,15 +6,47 @@ A Swift Package for enforcing Conventional Commits and managing versions.
 
 ### GitHub Actions
 
-[WIP]
-This package provides two GitHub Actions steps for use in your pipelines.
+This package provides two types of GitHub Action steps for use in your pipelines.
 
 1. Validate that your commit names meet the correct format. 
 You can utilise this for pull request titles when squashing commits into a main branch.
 You can also use it to validate a list of commits when using merge commits or rebasing.
 
-2. Determine the correct value to increment your version number by when a merge has completed. 
+```
+...
+steps:
+  - uses: actions/checkout@v4
+  
+  - id: Versioning
+    uses: Oliver-Binns/Versioning@main
+    with:
+      ACTION_TYPE: 'Validate'
+        
+```
+
+2. Release new version when you merge code based on the conventional commit used.
 (i.e. increment `MAJOR` for breaking change, `MINOR` for features, `PATCH` for fixes)
+
+Ensure you have specified a GitHub token with write permissions:
+
+```
+jobs:
+  job_id:
+    name: Increment version number
+    runs-on: macos-13
+    permissions:
+      contents: write
+```
+
+And pass the GitHub Token as a parameter:
+
+```
+- id: Versioning
+  uses: Oliver-Binns/Versioning@main
+  with:
+    ACTION_TYPE: 'Release'
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
 
 ### Swift Package Manager
 
