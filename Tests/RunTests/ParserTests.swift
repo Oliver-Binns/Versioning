@@ -38,7 +38,7 @@ final class ReleaserTests: XCTestCase {
         XCTAssertEqual(version, Version(1, 2, 1))
     }
     
-    func testReleaseWhenReleaseWithMutilCommitMessage() async throws {
+    func testReleaseWhenReleaseWithMultilineCommitMessage() async throws {
         let session = MockAPISession()
         session.previousReleaseExists = true
         session.useMultiCommit = true
