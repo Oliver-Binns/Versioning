@@ -25,7 +25,7 @@ final class CommitTests: XCTestCase {
         }
     }
     
-    func testCommitWithMutileCommits() throws {
+    func testCommitWithMultilineCommits() throws {
         let commit = try Commit(string: """
 feat: DCMAW-7932 Automate Versioning (#50)
 * chore: added a new step on pull request.yml to validate PR names
