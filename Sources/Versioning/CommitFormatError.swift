@@ -1,13 +1,13 @@
 enum CommitFormatError: Error {
-    case invalid
+    case invalid(String)
     case invalidPrefix(Substring)
 }
 extension CommitFormatError: CustomStringConvertible {
     var description: String {
         switch self {
-        case .invalid:
+        case .invalid(let message):
             return """
-            \u{001B}[0;31mInvalid commit message format.
+            \u{001B}[0;31mInvalid commit message format: \(message)
             \u{001B}[0;33m
             Please use Conventional Commits.
             https://www.conventionalcommits.org
