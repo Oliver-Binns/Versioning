@@ -38,7 +38,11 @@ feat: DCMAW-7932 Automate Versioning (#50)
         XCTAssertFalse(commit.isBreakingChange)
         XCTAssertEqual(commit.message, """
 DCMAW-7932 Automate Versioning (#50)
-* chore
+* chore: added a new step on pull request.yml to validate PR names
+
+* chore: update quality report.yml to include increment version job
+
+* chore: moved validate job to before build and test action
 """)
     }
     
