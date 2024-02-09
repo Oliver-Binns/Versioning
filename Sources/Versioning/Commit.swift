@@ -12,7 +12,7 @@ public struct Commit {
     }
     
     public init(string: String) throws {
-        let components = string.split(separator: ": ")
+        let components = string.split(separator: ": ", maxSplits: 1)
         guard components.count >= 2 else {
             throw CommitFormatError.invalid(string)
         }
