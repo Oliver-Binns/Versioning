@@ -25,6 +25,27 @@ final class CommitTests: XCTestCase {
         }
     }
     
+    func testSquashedCommits() throws {
+        let commit = try Commit(string: """
+feat: DCMAW-7932 Automate Versioning (#50)
+* chore: added a new step on pull request.yml to validate PR names
+
+* chore: update quality report.yml to include increment version job
+
+* chore: moved validate job to before build and test action
+""")
+        XCTAssertEqual(commit.type, .feature)
+        XCTAssertFalse(commit.isBreakingChange)
+        XCTAssertEqual(commit.message, """
+DCMAW-7932 Automate Versioning (#50)
+* chore: added a new step on pull request.yml to validate PR names
+
+* chore: update quality report.yml to include increment version job
+
+* chore: moved validate job to before build and test action
+""")
+    }
+    
     func testThrowsInvalidPrefixError() throws {
         do {
             _ = try Commit(string: "invalid: adding-optional-initialiser-for-icon")
