@@ -1,5 +1,7 @@
 name: 'Release Version'
 description: 'Create new GitHub release using Conventional Commits'
+icon: 'git-merge'
+color: 'yellow'
 inputs:
   GITHUB_TOKEN:
     description: 'GitHub Actions token with write permissions, see docs: https://docs.github.com/en/actions/security-guides/automatic-token-authentication'
