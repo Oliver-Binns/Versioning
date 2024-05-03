@@ -50,14 +50,36 @@ DCMAW-7932 Automate Versioning (#50)
         do {
             _ = try Commit(string: "invalid: adding-optional-initialiser-for-icon")
             XCTFail("Expected error to be thrown")
-        } catch CommitFormatError.invalidPrefix { }
+        } catch CommitFormatError.invalidPrefix(let string) {
+            XCTAssertEqual(string, "invalid")
+        }
+    }   
+    
+    func testThrowsInvalidPrefixErrorDescription() throws {
+        do {
+            _ = try Commit(string: "invalid: adding-optional-initialiser-for-icon")
+            XCTFail("Expected error to be thrown")
+        } catch let error as CommitFormatError {
+            XCTAssertTrue(error.description.contains("\"invalid\" is not an allowed commit prefix."))
+        }
     }
     
     func testThrowsInvalidStructureError() throws {
         do {
             _ = try Commit(string: "feat with no colon / message")
             XCTFail("Expected error to be thrown")
-        } catch CommitFormatError.invalid { }
+        } catch CommitFormatError.invalid(let string) {
+            XCTAssertEqual(string, "feat with no colon / message")
+        }
+    }   
+    
+    func testThrowsInvalidStructureErrorDescription() throws {
+        do {
+            _ = try Commit(string: "feat with no colon / message")
+            XCTFail("Expected error to be thrown")
+        } catch let error as CommitFormatError {
+            XCTAssertTrue(error.description.contains("Invalid commit message format: feat with no colon / message"))
+        }
     }
     
     func testVersionIncrementValues() throws {

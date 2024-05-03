@@ -42,7 +42,7 @@ extension Commit {
         switch type {
         case .feature:
             return .minor
-        case .fix, .refactor, .style:
+        case .fix, .refactor, .style, .build:
             return .patch
         default:
             return nil
