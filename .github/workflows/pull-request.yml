@@ -17,7 +17,12 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect breaking changes
+    	run: swift package diagnose-api-breaking-changes main
     
       - name: Validate pull request title
         run: swift run Run --message "${{ github.event.pull_request.title }}"
