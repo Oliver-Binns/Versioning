@@ -11,6 +11,10 @@ let package = Package(
         .watchOS(.v9),
         .tvOS(.v16)
     ],
+    products: [
+        .executable(name: "Run", targets: ["Run"]),
+        .library(name: "Versioning", targets: ["Versioning", "GitHubAPI"])
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.2.3"))
     ],
