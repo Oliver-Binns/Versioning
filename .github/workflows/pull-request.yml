@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
     
       - name: Detect breaking changes
-        run: swift package diagnose-api-breaking-changes main
+        run: swift package diagnose-api-breaking-changes 1.1.0
     
       - name: Validate pull request title
         run: swift run Run --message "${{ github.event.pull_request.title }}"
