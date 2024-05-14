@@ -7,6 +7,6 @@ public enum CommitType: String, CaseIterable {
     case docs
     case style
     case refactor
-    case perf
+    case performance
     case test
 }
