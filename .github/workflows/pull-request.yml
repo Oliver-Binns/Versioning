@@ -30,10 +30,8 @@ jobs:
         run: |
           if [ steps.detect_breaking_changes.outcome = "success" ]; then
             export is_breaking=false
-            echo "not breaking"
           else
             echo "is breaking"
-            export is_breaking=true
           fi;
         
           swift run Run \
