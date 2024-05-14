@@ -28,9 +28,13 @@ jobs:
     
       - name: Validate pull request title
         run: |
-          if [ steps.detect_breaking_changes.outcome = "success" ]; then
+          echo "outcome: ${{ steps.detect_breaking_changes.outcome }}"
+        
+          if [ ${{ steps.detect_breaking_changes.outcome }} == "success" ]; then
             export is_breaking=false
+            echo "not breaking"
           else
+            export is_breaking=true
             echo "is breaking"
           fi;
         
