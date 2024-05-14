@@ -18,6 +18,11 @@ inputs:
     required: false
     type: boolean
     default: false
+  CONTAINS_BREAKING_CHANGE:
+    description: 'Whether the commit being validated contains a breaking change to the public facing API'
+    required: false
+    default: 'false'
+
 outputs:
   release_version:
     description: "Release version in semantic format; e.g. 1.0.0"
@@ -43,6 +48,7 @@ runs:
       run: |
        swift run --skip-build Run validate \
          --message "${{ github.event.pull_request.title }}"
+         --contains-breaking-change ${{ inputs.CONTAINS_BREAKING_CHANGE }}
       
     - name: Release
       id: release
