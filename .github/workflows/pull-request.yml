@@ -36,7 +36,7 @@ jobs:
         
           swift run Run \
             --message "${{ github.event.pull_request.title }}" \
-            --require-breaking-change $is_breaking
+            --contains-breaking-change $is_breaking
     
       - name: Run Tests
         run: swift test
