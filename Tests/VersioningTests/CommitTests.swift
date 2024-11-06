@@ -9,9 +9,17 @@ final class CommitTests: XCTestCase {
         XCTAssertEqual(commit.message, "adding-optional-initialiser-for-icon")
     }
     
-    func testCommitTypes() throws {
+    func testCommitTypesWithoutDeps() throws {
         try CommitType.allCases.forEach {
             let message = "\($0.rawValue): commit message here"
+            let commit = try Commit(string: message)
+            XCTAssertEqual($0, commit.type)
+        }
+    }
+
+    func testCommitTypesWithDeps() throws {
+        try CommitType.allCases.forEach {
+            let message = "\($0.rawValue)(dep): commit message here"
             let commit = try Commit(string: message)
             XCTAssertEqual($0, commit.type)
         }
