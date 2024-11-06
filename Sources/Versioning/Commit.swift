@@ -25,6 +25,9 @@ public struct Commit {
             self.type = CommitType(rawValue: String(trimmedExclamation))!
         } else if let type = CommitType(rawValue: String(components[0])) {
             self.type = type
+        } else if let trimmedType = components[0].components(separatedBy: "(").first,
+                  let type = CommitType(rawValue: trimmedType) {
+            self.type = type
         } else {
             throw CommitFormatError.invalidPrefix(components[0])
         }
