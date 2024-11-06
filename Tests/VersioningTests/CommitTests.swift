@@ -9,7 +9,7 @@ final class CommitTests: XCTestCase {
         XCTAssertEqual(commit.message, "adding-optional-initialiser-for-icon")
     }
     
-    func testCommitTypesWithoutDeps() throws {
+    func testCommitTypesWithoutScope() throws {
         try CommitType.allCases.forEach {
             let message = "\($0.rawValue): commit message here"
             let commit = try Commit(string: message)
@@ -17,15 +17,23 @@ final class CommitTests: XCTestCase {
         }
     }
 
-    func testCommitTypesWithDeps() throws {
+    func testCommitTypesWithScope() throws {
         try CommitType.allCases.forEach {
-            let message = "\($0.rawValue)(dep something something: commit message here"
+            let message = "\($0.rawValue)(dep): commit message here"
             let commit = try Commit(string: message)
             XCTAssertEqual($0, commit.type)
         }
     }
     
-    func testBreakingChange() throws {
+    func testBreakingChangeCommitTypesWithScope() throws {
+        try CommitType.allCases.forEach {
+            let message = "\($0.rawValue)!: commit message here"
+            let commit = try Commit(string: message)
+            XCTAssertEqual($0, commit.type)
+        }
+    }
+
+    func testBreakingChangeWithoutScope() throws {
         try CommitType.allCases.forEach {
             let message = "\($0.rawValue)!: commit message here"
             let commit = try Commit(string: message)
@@ -92,14 +100,14 @@ DCMAW-7932 Automate Versioning (#50)
     
     func testThrowsInvalidScopeError() throws {
         do {
-            _ = try Commit(string: "feat:(no closing parenthesis")
+            _ = try Commit(string: "feat(no closing parenthesis: commit message")
             XCTFail("Expected error to be thrown")
         } catch let error as CommitFormatError {
-            XCTAssertTrue(error.description.contains("Invalid scope format: missing closing parenthesis"))
+            XCTAssertTrue(error.description.contains("Invalid scope or commit type"))
         }
     }
-    
-    func testVersionIncrementValues() throws {
+
+    func testVersionIncrementValuesWithoutScope() throws {
         try XCTAssertEqual(
             Commit(string: "feat!: adding-optional-initialiser-for-icon").versionIncrement,
             .major
@@ -117,6 +125,28 @@ DCMAW-7932 Automate Versioning (#50)
 
         try XCTAssertEqual(
             Commit(string: "ci: adding-optional-initialiser-for-icon").versionIncrement,
+            nil
+        )
+    }
+
+    func testVersionIncrementValuesWithScope() throws {
+        try XCTAssertEqual(
+            Commit(string: "feat(example-scope)!: adding-optional-initialiser-for-icon").versionIncrement,
+            .major
+        )
+        
+        try XCTAssertEqual(
+            Commit(string: "feat(example-scope): adding-optional-initialiser-for-icon").versionIncrement,
+            .minor
+        )
+        
+        try XCTAssertEqual(
+            Commit(string: "fix(example-scope): adding-optional-initialiser-for-icon").versionIncrement,
+            .patch
+        )
+
+        try XCTAssertEqual(
+            Commit(string: "ci(example-scope): adding-optional-initialiser-for-icon").versionIncrement,
             nil
         )
     }

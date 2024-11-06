@@ -1,3 +1,5 @@
+import Foundation
+
 public struct Commit {
     public let type: CommitType
     public let isBreakingChange: Bool
@@ -12,27 +14,53 @@ public struct Commit {
     }
     
     public init(string: String) throws {
+        
+        
         let components = string.split(separator: ": ", maxSplits: 1)
         guard components.count == 2 else {
             throw CommitFormatError.invalid(string)
         }
-    
-        self.isBreakingChange = components[0].last == "!"
         
-        if isBreakingChange {
-            let messageLength = components[0].count
-            let trimmedExclamation = components[0].prefix(messageLength-1)
-            self.type = CommitType(rawValue: String(trimmedExclamation))!
-        } else if let type = CommitType(rawValue: String(components[0])) {
-            self.type = type
-        } else if let trimmedType = components[0].components(separatedBy: "(").first,
-                  let type = CommitType(rawValue: trimmedType) {
+        let conventionalCommitComponent = components[0]
+        let isScopeIndicatorPresent = conventionalCommitComponent.contains("(")
+        self.isBreakingChange = components[0].last == "!"
+
+        
+
+        if(isScopeIndicatorPresent) {
+            if(self.isBreakingChange) {
+                let regexPattern = "^[a-zA-Z]+\\([a-zA-Z-]+\\)!$"
+                let isValid = conventionalCommitComponent.range(of: regexPattern, options: .regularExpression, range: nil, locale: nil) != nil
+                if(!isValid) {
+                    throw CommitFormatError.invalid("Invalid scope or commit type1")
+                }
+            }
+            else {
+                let regexPattern = "^[a-zA-Z]+\\([a-zA-Z-]+\\)!?$"
+                let isValid = conventionalCommitComponent.range(of: regexPattern, options: .regularExpression, range: nil, locale: nil) != nil
+                if(!isValid) {
+                    throw CommitFormatError.invalid("Invalid scope or commit type2")
+                }
+            }
+        }
+        let commitType: Substring
+        
+        if(isScopeIndicatorPresent) {
+            commitType = components[0].split(separator: "(", maxSplits: 1)[0]
+        } else {
+            if(isBreakingChange) {
+                commitType = components[0].split(separator: "!", maxSplits: 1)[0]
+            } else {
+                commitType = components[0]
+            }
+        }
+        if let type = CommitType(rawValue: String(commitType)) {
             self.type = type
         } else {
             throw CommitFormatError.invalidPrefix(components[0])
         }
-        
-        message = String(components[1])
+
+        self.message = String(components[1])
     }
 }
 
