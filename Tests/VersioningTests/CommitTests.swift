@@ -19,7 +19,7 @@ final class CommitTests: XCTestCase {
 
     func testCommitTypesWithDeps() throws {
         try CommitType.allCases.forEach {
-            let message = "\($0.rawValue)(dep): commit message here"
+            let message = "\($0.rawValue)(dep something something: commit message here"
             let commit = try Commit(string: message)
             XCTAssertEqual($0, commit.type)
         }
@@ -87,6 +87,15 @@ DCMAW-7932 Automate Versioning (#50)
             XCTFail("Expected error to be thrown")
         } catch let error as CommitFormatError {
             XCTAssertTrue(error.description.contains("Invalid commit message format: feat with no colon / message"))
+        }
+    }
+    
+    func testThrowsInvalidScopeError() throws {
+        do {
+            _ = try Commit(string: "feat:(no closing parenthesis")
+            XCTFail("Expected error to be thrown")
+        } catch let error as CommitFormatError {
+            XCTAssertTrue(error.description.contains("Invalid scope format: missing closing parenthesis"))
         }
     }
     
