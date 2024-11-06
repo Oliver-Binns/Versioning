@@ -124,6 +124,11 @@ DCMAW-7932 Automate Versioning (#50)
         )
 
         try XCTAssertEqual(
+            Commit(string: "build: adding-optional-initialiser-for-icon").versionIncrement,
+            .patch
+        )
+
+        try XCTAssertEqual(
             Commit(string: "ci: adding-optional-initialiser-for-icon").versionIncrement,
             nil
         )
@@ -142,6 +147,11 @@ DCMAW-7932 Automate Versioning (#50)
         
         try XCTAssertEqual(
             Commit(string: "fix(example-scope): adding-optional-initialiser-for-icon").versionIncrement,
+            .patch
+        )
+
+        try XCTAssertEqual(
+            Commit(string: "build(deps): adding-optional-initialiser-for-icon").versionIncrement,
             .patch
         )
 
