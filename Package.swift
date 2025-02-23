@@ -26,7 +26,12 @@ let package = Package(
         ]),
         .testTarget(name: "RunTests", dependencies: ["Run"]),
         
-        .target(name: "Versioning"),
+        .target(
+            name: "Versioning",
+            swiftSettings: [
+                .unsafeFlags(["-enable-bare-slash-regex"])
+            ]
+        ),
         .testTarget(name: "VersioningTests", dependencies: ["Versioning"]),
         
         .target(name: "GitHubAPI"),
