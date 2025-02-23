@@ -1,22 +1,43 @@
 public struct Commit {
     public let type: CommitType
+    public let scope: String?
     public let isBreakingChange: Bool
     public let message: String
-    
+
     init(type: CommitType,
+         scope: String? = nil,
          isBreakingChange: Bool,
          message: String) {
         self.type = type
+        self.scope = scope
         self.isBreakingChange = isBreakingChange
         self.message = message
     }
     
     public init(string: String) throws {
-        let components = string.split(separator: ": ", maxSplits: 1)
+        let search = /(?<type>[a-z]+)(\((?<scope>[a-z]+)\))?(?<breaking>!)?: (?<message>(.|\n)+)/
+
+        do {
+            guard let match = try search.wholeMatch(in: string) else {
+                throw CommitFormatError.invalid(string)
+            }
+
+            guard let type = CommitType(rawValue: String(match.output.type)) else {
+                throw CommitFormatError.invalidPrefix(match.output.type)
+            }
+            self.type = type
+            self.scope = match.output.scope.map(String.init)
+            self.isBreakingChange = match.output.breaking != nil
+            self.message = String(match.output.message)
+        }
+
+
+        /*let components = string.split(separator: ": ", maxSplits: 1)
         guard components.count == 2 else {
             throw CommitFormatError.invalid(string)
         }
-    
+
+        self.scope = nil
         self.isBreakingChange = components[0].last == "!"
         
         if isBreakingChange {
@@ -29,7 +50,7 @@ public struct Commit {
             throw CommitFormatError.invalidPrefix(components[0])
         }
         
-        message = String(components[1])
+        message = String(components[1])*/
     }
 }
 

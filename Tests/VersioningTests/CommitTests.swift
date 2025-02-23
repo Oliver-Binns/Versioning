@@ -103,4 +103,11 @@ DCMAW-7932 Automate Versioning (#50)
             nil
         )
     }
+
+    func testParsesScope() throws {
+        try XCTAssertEqual(
+            Commit(string: "build(deps): bump github.com/apple/swift-argument-parser from 1.2.3 to 1.5.0 ").scope,
+            "deps"
+        )
+    }
 }
