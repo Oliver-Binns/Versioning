@@ -25,6 +25,8 @@ steps:
         
 ```
 
+You can optionally pass through a `CONTAINS_BREAKING_CHANGE` flag for the API, which will enforce that breaking changes use a commit name containing `!` to denote a breaking change.
+
 2. Release new version when you merge code based on the conventional commit used.
 (i.e. increment `MAJOR` for breaking change, `MINOR` for features, `PATCH` for fixes)
 
