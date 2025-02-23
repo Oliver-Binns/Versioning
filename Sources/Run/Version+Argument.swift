@@ -1,7 +1,7 @@
 import ArgumentParser
 import Versioning
 
-extension Version: ExpressibleByArgument {
+extension Version: @retroactive ExpressibleByArgument {
     public init?(argument: String) {
         self.init(string: argument)
     }
