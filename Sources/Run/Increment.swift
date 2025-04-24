@@ -11,14 +11,17 @@ struct Increment: AsyncParsableCommand {
     
     @Option(name: .shortAndLong, help: "A token that you can use to authenticate on behalf of GitHub Actions")
     private var token: String
-    
+
+    @Option(name: .long, help: "True if a Git tag should be created but not a GitHub release")
+    private var tagOnly: Bool = false
+
     @Flag(name: .shortAndLong)
     private var verbose = false
     
     mutating func run() async throws {
         let session = GitHubAPISession(repository: repository, apiToken: token)
         if let version = try await Releaser(session: session, verbose: verbose)
-            .makeRelease(sha: sha) {
+            .makeRelease(sha: sha, tagOnly: tagOnly) {
             print(version)
         }
     }

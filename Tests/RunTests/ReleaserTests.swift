@@ -37,7 +37,25 @@ final class ReleaserTests: XCTestCase {
         
         XCTAssertEqual(version, Version(1, 2, 1))
     }
-    
+
+    func testReleaseWhenTagOnly() async throws {
+        let session = MockAPISession()
+        session.previousReleaseExists = true
+
+        let sha = UUID().uuidString
+        let sut = Releaser(session: session)
+        let version = try await sut.makeRelease(sha: sha, tagOnly: true)
+
+        XCTAssertEqual(session.didCallCompare?.0, "1.0.0")
+        XCTAssertEqual(session.didCallCompare?.1, sha)
+
+        XCTAssertEqual(session.didCallCreateReference?.0, "1.2.1")
+        XCTAssertEqual(session.didCallCreateReference?.1, sha)
+        XCTAssertNil(session.didCallCreateRelease)
+
+        XCTAssertEqual(version, Version(1, 2, 1))
+    }
+
     func testReleaseOfSquashedCommits() async throws {
         let session = MockAPISession()
         session.previousReleaseExists = true
