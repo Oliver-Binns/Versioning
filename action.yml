@@ -54,7 +54,7 @@ runs:
           --repository $GITHUB_REPOSITORY \
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}}
-          --tagOnly ${{inputs.TAG_ONLY}}
+          --tag-only ${{inputs.TAG_ONLY}}
         )
         
         echo "version=$version" >> $GITHUB_OUTPUT
