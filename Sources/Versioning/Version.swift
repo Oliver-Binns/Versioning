@@ -70,6 +70,7 @@ extension Version: Comparable {
     }
 }
 
+extension Version: Sendable { }
 extension Version {
-    public static var one = Version(1, 0, 0)
+    public static let one = Version(1, 0, 0)
 }
