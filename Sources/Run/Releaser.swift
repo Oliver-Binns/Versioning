@@ -10,14 +10,10 @@ struct Releaser {
         self.verbose = verbose
     }
     
-    func makeRelease(sha: String, tagOnly: Bool = false, prerelease: Bool = false) async throws -> Version? {
+    func makeRelease(sha: String, tagOnly: Bool = false) async throws -> Version? {
         let (initialVersion, commits) = try await fetchCommits(sha: sha)
         let newVersion = try incrementVersion(initialVersion, commits: commits)
         var newVersionDescription = newVersion.description
-        
-        if prerelease {
-            newVersionDescription += "-alpha"
-        }
         
         guard newVersion > initialVersion else {
             log("Nothing to do: no significant changes made")
