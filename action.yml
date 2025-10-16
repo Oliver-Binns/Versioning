@@ -13,6 +13,11 @@ inputs:
     options:
     - Release
     - Validate
+  IS_PRERELEASE:
+    description: 'Is the release a prerelease version'
+    required: false
+    type: boolean
+    default: false
   TAG_ONLY:
     description: 'True if a Git tag should be created but not a GitHub release'
     required: false
@@ -55,6 +60,7 @@ runs:
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}} \
           --tag-only ${{inputs.TAG_ONLY}} \
+          --prerelease ${{inputs.IS_PRERELEASE}}
         )
         
         echo "version=$version" >> $GITHUB_OUTPUT

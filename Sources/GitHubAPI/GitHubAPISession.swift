@@ -6,10 +6,12 @@ import FoundationNetworking
 public final class GitHubAPISession {
     private let session: URLSession
     private let repository: String
+    private let prerelease: Bool
     
     init(sessionConfiguration: URLSessionConfiguration,
          repository: String,
-         apiToken: String) {
+         apiToken: String,
+         prerelease: Bool) {
         sessionConfiguration.httpAdditionalHeaders = [
             "Accept" : "application/vnd.github+json",
             "Authorization" : "token \(apiToken)",
@@ -18,11 +20,12 @@ public final class GitHubAPISession {
         
         self.session = URLSession(configuration: sessionConfiguration)
         self.repository = repository
+        self.prerelease = prerelease
     }
     
-    public convenience init(repository: String, apiToken: String) {
+    public convenience init(repository: String, apiToken: String, prerelease: Bool) {
         self.init(sessionConfiguration: .ephemeral,
-                  repository: repository, apiToken: apiToken)
+                  repository: repository, apiToken: apiToken, prerelease: prerelease)
     }
     
     public func latestRelease() async throws -> String {
@@ -73,7 +76,7 @@ public final class GitHubAPISession {
             name: name,
             tagName: version.description,
             draft: false,
-            prerelease: false,
+            prerelease: prerelease,
             generateReleaseNotes: true
         )
         
