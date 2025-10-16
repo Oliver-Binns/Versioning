@@ -15,7 +15,7 @@ struct Increment: AsyncParsableCommand {
     @Option(name: .long, help: "True if a Git tag should be created but not a GitHub release")
     private var tagOnly: Bool = false
     
-    @Option(name: .shortAndLong, help: "A suffix to be added to the end of the version string")
+    @Option(name: .shortAndLong, help: "A suffix added to the end of the version string")
     private var suffix: String?
 
     @Flag(name: .shortAndLong)
