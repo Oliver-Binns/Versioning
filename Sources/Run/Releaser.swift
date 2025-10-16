@@ -14,10 +14,10 @@ struct Releaser {
         let (initialVersion, commits) = try await fetchCommits(sha: sha)
         let newVersion = try incrementVersion(initialVersion, commits: commits)
         
-        var newVersionDescription = newVersion.description
-        
-        if let suffix {
-            newVersionDescription += "-\(suffix)"
+        let newVersionDescription = if let suffix {
+            "\(newVersion.description)-\(suffix)"
+        } else {
+            newVersion.description
         }
         
         guard newVersion > initialVersion else {
