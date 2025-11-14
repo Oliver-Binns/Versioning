@@ -18,9 +18,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-
+        with:
+          fetch-depth: 0
+    
+      - name: Detect breaking changes
+        id: detect_breaking_changes
+        continue-on-error: true
+        run: swift package diagnose-api-breaking-changes "origin/${{ github.base_ref }}"
+    
       - name: Validate pull request title
-        run: swift run Run --message "${{ github.event.pull_request.title }}"
+        run: |
+          if [ ${{ steps.detect_breaking_changes.outcome }} == "success" ]; then
+            export is_breaking=false
+          else
+            export is_breaking=true
+          fi;
+        
+          swift run Run \
+            --message "${{ github.event.pull_request.title }}" \
+            --contains-breaking-change $is_breaking
     
       - name: Run Tests
         run: swift test
