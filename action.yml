@@ -47,7 +47,7 @@ runs:
       shell: bash
       run: |
        swift run --skip-build Run validate \
-         --message "${{ github.event.pull_request.title }}"
+         --message "${{ github.event.pull_request.title }}" \
          --contains-breaking-change ${{ inputs.CONTAINS_BREAKING_CHANGE }}
       
     - name: Release
