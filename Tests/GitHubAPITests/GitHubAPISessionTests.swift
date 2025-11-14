@@ -7,13 +7,15 @@ final class GitHubAPISessionTests: XCTestCase {
     
     private var accessToken = UUID().uuidString
     private let repository = "octocat/Hello-World"
+    private let prerelease = false
     
     override func setUp() {
         super.setUp()
         
         sut = GitHubAPISession(sessionConfiguration: .mock,
                                repository: repository,
-                               apiToken: accessToken)
+                               apiToken: accessToken,
+                               prerelease: prerelease)
     }
     
     override func tearDown() {
