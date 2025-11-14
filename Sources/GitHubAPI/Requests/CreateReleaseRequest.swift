@@ -6,7 +6,7 @@ struct CreateReleaseRequest: Encodable {
     let draft: Bool
     let prerelease: Bool
     let generateReleaseNotes: Bool
-    
+
     enum CodingKeys: String, CodingKey {
         case name
         case tagName = "tag_name"

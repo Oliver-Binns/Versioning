@@ -6,29 +6,29 @@ import FoundationNetworking
 public final class GitHubAPISession {
     private let session: URLSession
     private let repository: String
-    
+
     init(sessionConfiguration: URLSessionConfiguration,
          repository: String,
          apiToken: String) {
         sessionConfiguration.httpAdditionalHeaders = [
-            "Accept" : "application/vnd.github+json",
-            "Authorization" : "token \(apiToken)",
+            "Accept": "application/vnd.github+json",
+            "Authorization": "token \(apiToken)",
             "Content-Type": "application/json"
         ]
-        
+
         self.session = URLSession(configuration: sessionConfiguration)
         self.repository = repository
     }
-    
+
     public convenience init(repository: String, apiToken: String) {
         self.init(sessionConfiguration: .ephemeral,
                   repository: repository, apiToken: apiToken)
     }
-    
+
     public func latestRelease() async throws -> String {
         let (data, response) = try await session
             .data(from: .latestRelease(repository: repository))
-        
+
         guard let response = response as? HTTPURLResponse else {
             throw GitHubAPIError.unknown
         }
@@ -43,10 +43,9 @@ public final class GitHubAPISession {
         default:
             throw GitHubAPIError.unknown
         }
-        
-        
+
     }
-    
+
     public func compare(base: String, head: String) async throws -> [String] {
         let (data, _) = try await session
             .data(from: .compare(repository: repository, base: base, head: head))
@@ -54,19 +53,19 @@ public final class GitHubAPISession {
             .decode(GitHubCompareResponse.self, from: data)
             .commits.map(\.commit).map(\.message)
     }
-    
+
     public func createReference(version: String, sha: String) async throws {
         let reference = "refs/tags/\(version)"
         let requestObject = CreateReferenceRequest(ref: reference,
                                                    sha: sha)
-        
+
         var request = URLRequest(url: .references(repository: repository))
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
-        
+
         _ = try await session.data(for: request)
     }
-    
+
     public func createRelease(version: String) async throws {
         let name = "v\(version)"
         let requestObject = CreateReleaseRequest(
@@ -76,12 +75,11 @@ public final class GitHubAPISession {
             prerelease: false,
             generateReleaseNotes: true
         )
-        
+
         var request = URLRequest(url: .releases(repository: repository))
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
-        
+
         _ = try await session.data(for: request)
     }
 }
-

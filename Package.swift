@@ -16,7 +16,8 @@ let package = Package(
         .library(name: "Versioning", targets: ["Versioning", "GitHubAPI"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.2.3"))
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMajor(from: "1.2.3")),
+        .package(url: "https://github.com/realm/swiftlint.git", .upToNextMinor(from: "0.53.0"))
     ],
     targets: [
         .executableTarget(name: "Run", dependencies: [
@@ -25,7 +26,7 @@ let package = Package(
             .product(name: "ArgumentParser", package: "swift-argument-parser")
         ]),
         .testTarget(name: "RunTests", dependencies: ["Run"]),
-        
+
         .target(
             name: "Versioning",
             swiftSettings: [
@@ -33,7 +34,7 @@ let package = Package(
             ]
         ),
         .testTarget(name: "VersioningTests", dependencies: ["Versioning"]),
-        
+
         .target(name: "GitHubAPI"),
         .testTarget(name: "GitHubAPITests",
                     dependencies: ["GitHubAPI"],
