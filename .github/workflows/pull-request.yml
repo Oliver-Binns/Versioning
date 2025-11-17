@@ -30,7 +30,7 @@ jobs:
         uses: ./
         with:
           ACTION_TYPE: 'Validate'
-          CONTAINS_BREAKING_CHANGE: ${{ steps.detect_breaking_changes.outcome == 'success' }}
+          CONTAINS_BREAKING_CHANGE: ${{ steps.detect_breaking_changes.outcome != 'success' }}
 
       - name: Run Tests
         run: swift test
