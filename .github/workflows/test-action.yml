@@ -1,0 +1,22 @@
+name: Test Action
+
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize, ready_for_review ]
+    branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Test action
+    runs-on: macos-26
+
+    steps:
+      - name: Run Action
+        uses: Oliver-Binns/Versioning@fix-action
+        with:
+          ACTION_TYPE: 'Validate'
+
