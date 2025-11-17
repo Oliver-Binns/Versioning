@@ -30,6 +30,13 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Print Context
+      shell: bash
+      run: |
+        echo ${{ github.workflow.sha }}
+        echo $GITHUB_ACTION
+        echo $GITHUB_ACTION_PATH
+
     - name: Clone Action
       uses: actions/checkout@v5
       with:
