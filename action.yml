@@ -17,6 +17,7 @@ inputs:
     description: 'A suffix to be added to the end of the release version'
     required: false
     type: string
+    default: null
   TAG_ONLY:
     description: 'True if a Git tag should be created but not a GitHub release'
     required: false
@@ -59,7 +60,6 @@ runs:
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}} \
           --tag-only ${{inputs.TAG_ONLY}} \
-          - ${{ if parameters.SUFFIX }}:
           --suffix ${{inputs.SUFFIX}} \
         )
         
