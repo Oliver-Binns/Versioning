@@ -1,24 +1,24 @@
-@testable import Run
 import GitHubAPI
+@testable import Run
 
 final class MockAPISession: APISession {
     var previousReleaseExists: Bool = false
     var useMultiCommit: Bool = false
     var didCallCompare: (String, String)?
-    
+
     var didCallCreateReference: (String, String)?
     var didCallCreateRelease: String?
-    
+
     func latestRelease() async throws -> String {
         if previousReleaseExists {
             return "1.0.0"
         }
         throw GitHubAPIError.notFound
     }
-    
+
     func compare(base: String, head: String) async throws -> [String] {
         didCallCompare = (base, head)
-        
+
         var listOfCommit =  [
             "chore: implement pipelines for Cards",
             "chore: fix Fastlane deployment",
@@ -29,7 +29,7 @@ final class MockAPISession: APISession {
             "feat: use button rather than tap recogniser",
             "fix: fixed compilation issues on Linux"
         ]
-        
+
         if useMultiCommit {
             listOfCommit.insert("""
 feat: implement pipelines for Cards
@@ -37,17 +37,16 @@ feat: implement pipelines for Cards
 * chore: fix Fastlane deployment
 """, at: 0)
         }
-        
+
         return listOfCommit
     }
-    
+
     func createReference(version: String, sha: String) async throws {
         didCallCreateReference = (version, sha)
     }
-    
+
     func createRelease(version: String) async throws {
         didCallCreateRelease = version
     }
-    
-    
+
 }

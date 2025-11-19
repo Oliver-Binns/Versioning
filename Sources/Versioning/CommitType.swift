@@ -3,7 +3,10 @@ public enum CommitType: String, CaseIterable {
     case feature = "feat"
     case build
     case chore
+
+    // swiftlint:disable:next identifier_name
     case ci
+
     case docs
     case style
     case refactor
