@@ -58,8 +58,8 @@ runs:
           --repository $GITHUB_REPOSITORY \
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}} \
-          --tag-only ${{inputs.TAG_ONLY}} \
           --suffix ${{inputs.SUFFIX}} \
+          --tag-only ${{inputs.TAG_ONLY}} \
         )
         
         echo "version=$version" >> $GITHUB_OUTPUT
