@@ -16,7 +16,7 @@ struct Increment: AsyncParsableCommand {
     private var tagOnly: Bool = false
 
     @Option(name: .shortAndLong, help: "A suffix to be added to the version string")
-    private var suffix: Bool = false
+    private var suffix: String?
 
     @Flag(name: .shortAndLong)
     private var verbose = false
