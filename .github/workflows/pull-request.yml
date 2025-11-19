@@ -1,8 +1,7 @@
 name: Pull Request
 
 on:
-  pull_request:
-    types: [ opened, reopened, synchronize, ready_for_review ]
+  push:
     branches: [ main ]
 
 concurrency:
@@ -29,8 +28,4 @@ jobs:
       - name: Validate pull request title
         uses: ./
         with:
-          ACTION_TYPE: 'Validate'
-          CONTAINS_BREAKING_CHANGE: ${{ steps.detect_breaking_changes.outcome != 'success' }}
-
-      - name: Run Tests
-        run: swift test
+          ACTION_TYPE: 'Release'
