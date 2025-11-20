@@ -17,7 +17,7 @@ inputs:
     description: 'A suffix to be added to the end of the release version'
     required: false
     type: string
-    default: null
+    default: 'alpha'
   TAG_ONLY:
     description: 'True if a Git tag should be created but not a GitHub release'
     required: false
