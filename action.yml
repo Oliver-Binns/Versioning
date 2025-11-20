@@ -60,6 +60,7 @@ runs:
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}} \
           --tag-only ${{inputs.TAG_ONLY}} \
+          --suffix ${{inputs.SUFFIX}} \
         )
         
         echo "version=$version" >> $GITHUB_OUTPUT
