@@ -81,7 +81,11 @@ public final class GitHubAPISession {
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
         
-        _ = try await session.data(for: request)
+        do {
+            _ = try await session.data(for: request)
+        } catch {
+            print(error)
+        }
     }
 }
 
