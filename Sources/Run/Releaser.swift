@@ -67,7 +67,7 @@ struct Releaser {
     }
     
     private func log(_ values: String...) {
-        guard verbose else { return }
+        // guard verbose else { return }
         print(values)
     }
 }
