@@ -61,7 +61,7 @@ runs:
           --token ${{inputs.GITHUB_TOKEN}} \
           --tag-only ${{inputs.TAG_ONLY}} \
 
-     - name: Release (with Suffix)
+    - name: Release (with Suffix)
       id: release
       if: ${{ inputs.ACTION_TYPE == 'Release' }} && ${{ inputs.SUFFIX != null }}
       working-directory: ${{ github.action_path }}
