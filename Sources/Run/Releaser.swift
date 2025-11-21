@@ -31,6 +31,7 @@ struct Releaser {
 
         if !tagOnly {
             try await session.createRelease(version: newVersionDescription)
+            print("tag only")
         }
         
         log("Released new version: \(newVersion)")
