@@ -13,8 +13,9 @@ struct Releaser {
     func makeRelease(sha: String, tagOnly: Bool = false, suffix: String? = nil) async throws -> Version? {
         print("made it to make release")
         let (initialVersion, commits) = try await fetchCommits(sha: sha)
+        print("made it to initial version")
         let newVersion = try incrementVersion(initialVersion, commits: commits)
-
+        print("made it to new version")
         let newVersionDescription = if let suffix {
             "\(newVersion.description)-\(suffix)"
         } else {
