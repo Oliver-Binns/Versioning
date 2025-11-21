@@ -11,6 +11,7 @@ struct Releaser {
     }
     
     func makeRelease(sha: String, tagOnly: Bool = false, suffix: String? = nil) async throws -> Version? {
+        print("made it to make release")
         let (initialVersion, commits) = try await fetchCommits(sha: sha)
         let newVersion = try incrementVersion(initialVersion, commits: commits)
 
