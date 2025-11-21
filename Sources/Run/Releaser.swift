@@ -22,10 +22,10 @@ struct Releaser {
             newVersion.description
         }
         
-        guard newVersion > initialVersion else {
-            log("Nothing to do: no significant changes made")
-            return nil
-        }
+        // guard newVersion > initialVersion else {
+        //     log("Nothing to do: no significant changes made")
+        //     return nil
+        // }
         
         try await session.createReference(version: newVersionDescription, sha: sha)
 
