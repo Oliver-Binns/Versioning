@@ -85,6 +85,7 @@ public final class GitHubAPISession {
         
         do {
             _ = try await session.data(for: request)
+            print("api succeeded")
         } catch {
             print(error)
         }
