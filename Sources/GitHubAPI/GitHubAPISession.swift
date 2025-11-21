@@ -76,12 +76,19 @@ public final class GitHubAPISession {
             prerelease: false,
             generateReleaseNotes: true
         )
+
+        print(requestObject)
         
         var request = URLRequest(url: .releases(repository: repository))
         request.httpMethod = "POST"
         request.httpBody = try JSONEncoder().encode(requestObject)
         
-        _ = try await session.data(for: request)
+        do {
+            _ = try await session.data(for: request)
+            print("api succeeded")
+        } catch {
+            print(error)
+        }
     }
 }
 

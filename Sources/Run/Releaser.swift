@@ -10,19 +10,28 @@ struct Releaser {
         self.verbose = verbose
     }
     
-    func makeRelease(sha: String, tagOnly: Bool = false) async throws -> Version? {
+    func makeRelease(sha: String, tagOnly: Bool = false, suffix: String? = nil) async throws -> Version? {
+        print("made it to make release")
         let (initialVersion, commits) = try await fetchCommits(sha: sha)
+        print("made it to initial version")
         let newVersion = try incrementVersion(initialVersion, commits: commits)
-        
-        guard newVersion > initialVersion else {
-            log("Nothing to do: no significant changes made")
-            return nil
+        print("made it to new version")
+        let newVersionDescription = if let suffix {
+            "\(newVersion.description)-\(suffix)"
+        } else {
+            newVersion.description
         }
         
-        try await session.createReference(version: newVersion.description, sha: sha)
+        // guard newVersion > initialVersion else {
+        //     log("Nothing to do: no significant changes made")
+        //     return nil
+        // }
+        
+        try await session.createReference(version: newVersionDescription, sha: sha)
 
         if !tagOnly {
-            try await session.createRelease(version: newVersion.description)
+            try await session.createRelease(version: newVersionDescription)
+            print("not tag only")
         }
         
         log("Released new version: \(newVersion)")
@@ -59,7 +68,7 @@ struct Releaser {
     }
     
     private func log(_ values: String...) {
-        guard verbose else { return }
+        // guard verbose else { return }
         print(values)
     }
 }

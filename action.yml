@@ -13,6 +13,11 @@ inputs:
     options:
     - Release
     - Validate
+  SUFFIX:
+    description: 'A suffix to be added to the end of the release version'
+    required: false
+    type: string
+    default: null
   TAG_ONLY:
     description: 'True if a Git tag should be created but not a GitHub release'
     required: false
@@ -43,18 +48,28 @@ runs:
        swift run --skip-build Run validate \
          --message "${{ github.event.pull_request.title }}" \
          --contains-breaking-change ${{ inputs.CONTAINS_BREAKING_CHANGE }}
-      
+
     - name: Release
       id: release
-      if: ${{ inputs.ACTION_TYPE == 'Release' }}
+      if: ${{ inputs.ACTION_TYPE == 'Release' }} && ${{ inputs.SUFFIX == null }}
       working-directory: ${{ github.action_path }}
       shell: bash
       run: |
-        version=$(swift run --skip-build Run increment \
+        swift run --skip-build Run increment \
           --repository $GITHUB_REPOSITORY \
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}} \
           --tag-only ${{inputs.TAG_ONLY}} \
-        )
-        
-        echo "version=$version" >> $GITHUB_OUTPUT
+
+    - name: Release (with Suffix)
+      id: release-wit-suffix
+      if: ${{ inputs.ACTION_TYPE == 'Release' }} && ${{ inputs.SUFFIX != null }}
+      working-directory: ${{ github.action_path }}
+      shell: bash
+      run: |
+        swift run --skip-build Run increment \
+          --repository $GITHUB_REPOSITORY \
+          --sha $GITHUB_SHA \
+          --token ${{inputs.GITHUB_TOKEN}} \
+          --tag-only ${{inputs.TAG_ONLY}} \
+          --suffix ${{inputs.SUFFIX}} \
