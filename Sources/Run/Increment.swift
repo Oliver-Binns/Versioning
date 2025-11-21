@@ -23,13 +23,14 @@ struct Increment: AsyncParsableCommand {
     
     mutating func run() async throws {
         let session = GitHubAPISession(repository: repository, apiToken: token)
-        do{
+        do {
             if let version = try await Releaser(session: session, verbose: verbose)
                 .makeRelease(sha: sha, tagOnly: tagOnly, suffix: suffix) {
                 print(version)
             }
         } catch {
-            log("Failed at intitial run step")
+            print(error)
+            print("Failed at intitial run step")
         }
     }
 }
