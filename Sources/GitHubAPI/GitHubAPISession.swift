@@ -76,6 +76,8 @@ public final class GitHubAPISession {
             prerelease: false,
             generateReleaseNotes: true
         )
+
+        print(requestObject)
         
         var request = URLRequest(url: .releases(repository: repository))
         request.httpMethod = "POST"
