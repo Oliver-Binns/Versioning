@@ -15,13 +15,16 @@ struct Increment: AsyncParsableCommand {
     @Option(name: .long, help: "True if a Git tag should be created but not a GitHub release")
     private var tagOnly: Bool = false
 
+    @Option(name: .long, help: "A suffix to be added to the version string")
+    private var suffix: String?
+
     @Flag(name: .shortAndLong)
     private var verbose = false
     
     mutating func run() async throws {
         let session = GitHubAPISession(repository: repository, apiToken: token)
         if let version = try await Releaser(session: session, verbose: verbose)
-            .makeRelease(sha: sha, tagOnly: tagOnly) {
+            .makeRelease(sha: sha, tagOnly: tagOnly, suffix: suffix) {
             print(version)
         }
     }
