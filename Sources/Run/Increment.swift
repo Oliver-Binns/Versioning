@@ -22,9 +22,9 @@ struct Increment: AsyncParsableCommand {
     private var verbose = false
     
     mutating func run() async throws {
-        let session = GitHubAPISession(repository: repository, apiToken: token, prerelease: prerelease)
+        let session = GitHubAPISession(repository: repository, apiToken: token)
         if let version = try await Releaser(session: session, verbose: verbose)
-            .makeRelease(sha: sha, tagOnly: tagOnly) {
+            .makeRelease(sha: sha, tagOnly: tagOnly, prerelease: prerelease) {
             print(version)
         }
     }

@@ -45,9 +45,7 @@ feat: implement pipelines for Cards
         didCallCreateReference = (version, sha)
     }
     
-    func createRelease(version: String) async throws {
+    func createRelease(version: String, prerelease: Bool) async throws {
         didCallCreateRelease = version
     }
-    
-    
 }
