@@ -6,7 +6,7 @@ import FoundationNetworking
 public final class GitHubAPISession {
     private let session: URLSession
     private let repository: String
-    
+]
     init(sessionConfiguration: URLSessionConfiguration,
          repository: String,
          apiToken: String) {
@@ -20,9 +20,10 @@ public final class GitHubAPISession {
         self.repository = repository
     }
     
-    public convenience init(repository: String, apiToken: String) {
+    public convenience init(repository: String, apiToken: String {
         self.init(sessionConfiguration: .ephemeral,
-                  repository: repository, apiToken: apiToken)
+                  repository: repository,
+                  apiToken: apiToken)
     }
     
     public func latestRelease() async throws -> String {
@@ -67,13 +68,13 @@ public final class GitHubAPISession {
         _ = try await session.data(for: request)
     }
     
-    public func createRelease(version: String) async throws {
+    public func createRelease(version: String, prerelease: Bool = false) async throws {
         let name = "v\(version)"
         let requestObject = CreateReleaseRequest(
             name: name,
             tagName: version.description,
             draft: false,
-            prerelease: false,
+            prerelease: prerelease,
             generateReleaseNotes: true
         )
         
