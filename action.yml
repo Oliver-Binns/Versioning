@@ -18,6 +18,11 @@ inputs:
     required: false
     type: boolean
     default: false
+  IS_PRERELEASE:
+    description: 'True if the release should be marked as a pre release'
+    required: false
+    type: boolean
+    default: false
   CONTAINS_BREAKING_CHANGE:
     description: 'Whether the commit being validated contains a breaking change to the public facing API'
     required: false
@@ -55,6 +60,7 @@ runs:
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}} \
           --tag-only ${{inputs.TAG_ONLY}} \
+          --prerelease ${{inputs.IS_PRERELEASE}} \
         )
         
         echo "version=$version" >> $GITHUB_OUTPUT
