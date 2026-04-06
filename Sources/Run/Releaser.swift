@@ -10,8 +10,8 @@ struct Releaser {
         self.verbose = verbose
     }
     
-    func makeRelease(sha: String, tagOnly: Bool = false) async throws -> Version? {
-        let (initialVersion, commits) = try await fetchCommits(sha: sha)
+    func makeRelease(sha: String, tagOnly: Bool = false, tagPrefix: String = "") async throws -> Version? {
+        let (initialVersion, commits) = try await fetchCommits(sha: sha, tagPrefix: tagPrefix)
         let newVersion = try incrementVersion(initialVersion, commits: commits)
         
         guard newVersion > initialVersion else {
@@ -19,20 +19,22 @@ struct Releaser {
             return nil
         }
         
-        try await session.createReference(version: newVersion.description, sha: sha)
+        let tagName = tagPrefix + newVersion.description
+        try await session.createReference(version: tagName, sha: sha)
 
         if !tagOnly {
-            try await session.createRelease(version: newVersion.description)
+            try await session.createRelease(version: tagName)
         }
         
         log("Released new version: \(newVersion)")
         return newVersion
     }
     
-    private func fetchCommits(sha: String) async throws -> (initial: Version, commits: [String]) {
+    private func fetchCommits(sha: String, tagPrefix: String) async throws -> (initial: Version, commits: [String]) {
         do {
-            let initialVersion = try await fetchVersion()
-            let commits = try await session.compare(base: initialVersion.description, head: sha)
+            let initialVersion = try await fetchVersion(tagPrefix: tagPrefix)
+            let tagName = tagPrefix + initialVersion.description
+            let commits = try await session.compare(base: tagName, head: sha)
             return (initialVersion, commits)
         } catch GitHubAPIError.notFound {
             log("No previous release found, comparing to previous commit")
@@ -44,9 +46,10 @@ struct Releaser {
         }
     }
  
-    private func fetchVersion() async throws -> Version {
+    private func fetchVersion(tagPrefix: String) async throws -> Version {
         let release = try await session.latestRelease()
-        return Version(string: release) ?? Version(0, 0, 0)
+        let versionString = release.hasPrefix(tagPrefix) ? String(release.dropFirst(tagPrefix.count)) : release
+        return Version(string: versionString) ?? Version(0, 0, 0)
     }
     
     private func incrementVersion(_ initialVersion: Version, commits: [String]) throws -> Version {

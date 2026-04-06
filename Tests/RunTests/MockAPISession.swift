@@ -4,6 +4,7 @@ import GitHubAPI
 final class MockAPISession: APISession {
     var previousReleaseExists: Bool = false
     var useMultiCommit: Bool = false
+    var tagPrefix: String = ""
     var didCallCompare: (String, String)?
     
     var didCallCreateReference: (String, String)?
@@ -11,7 +12,7 @@ final class MockAPISession: APISession {
     
     func latestRelease() async throws -> String {
         if previousReleaseExists {
-            return "1.0.0"
+            return "\(tagPrefix)1.0.0"
         }
         throw GitHubAPIError.notFound
     }
