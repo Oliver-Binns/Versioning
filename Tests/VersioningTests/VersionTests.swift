@@ -10,6 +10,17 @@ final class VersionTests: XCTestCase {
 
         XCTAssertNil(Version(string: "1.2.1.4"))
     }
+    
+    func testInitializationFromStringWithSuffixAndBuildNumber() {
+        let threeZeroOne = Version(string: "3.0.1-alpha.1")
+        XCTAssertEqual(threeZeroOne?.major, 3)
+        XCTAssertEqual(threeZeroOne?.minor, 0)
+        XCTAssertEqual(threeZeroOne?.increment, 1)
+        XCTAssertEqual(threeZeroOne?.suffix, "alpha")
+        XCTAssertEqual(threeZeroOne?.buildNumber, 1)
+
+        XCTAssertNil(Version(string: "1.2.1.4"))
+    }
 
     func testCompareVersions() {
         XCTAssertEqual(Version(3, 0, 5), Version(3, 0, 5))
@@ -25,5 +36,8 @@ final class VersionTests: XCTestCase {
         XCTAssertEqual(Version.one.apply(increment: .major), Version(2, 0, 0))
         XCTAssertEqual(Version.one.apply(increment: .minor), Version(1, 1, 0))
         XCTAssertEqual(Version.one.apply(increment: .patch), Version(1, 0, 1))
+        
+        XCTAssertEqual(Version.one.apply(increment: .patch, suffix: "alpha"), Version(1, 0, 1, "alpha", 1))
+        XCTAssertEqual(Version.oneWithSuffix.apply(increment: .patch, suffix: "alpha"), Version(1, 0, 1, "alpha", 2))
     }
 }

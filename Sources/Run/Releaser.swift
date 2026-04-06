@@ -10,22 +10,21 @@ struct Releaser {
         self.verbose = verbose
     }
     
-    func makeRelease(sha: String, tagOnly: Bool = false) async throws -> Version? {
+    func makeRelease(sha: String, tagOnly: Bool = false, suffix: String? = nil) async throws -> Version? {
         let (initialVersion, commits) = try await fetchCommits(sha: sha)
-        let newVersion = try incrementVersion(initialVersion, commits: commits)
+        let newVersion = try incrementVersion(initialVersion, commits: commits, suffix: suffix)
         
-        guard newVersion > initialVersion else {
-            log("Nothing to do: no significant changes made")
-            return nil
-        }
+//        guard newVersion > initialVersion else {
+//            log("Nothing to do: no significant changes made")
+//            return nil
+//        }
         
         try await session.createReference(version: newVersion.description, sha: sha)
-
+        
         if !tagOnly {
             try await session.createRelease(version: newVersion.description)
         }
         
-        log("Released new version: \(newVersion)")
         return newVersion
     }
     
@@ -43,18 +42,18 @@ struct Releaser {
             )
         }
     }
- 
+    
     private func fetchVersion() async throws -> Version {
         let release = try await session.latestRelease()
         return Version(string: release) ?? Version(0, 0, 0)
     }
     
-    private func incrementVersion(_ initialVersion: Version, commits: [String]) throws -> Version {
+    private func incrementVersion(_ initialVersion: Version, commits: [String], suffix: String? = nil) throws -> Version {
         try commits
             .map(Commit.init)
             .compactMap(\.versionIncrement)
             .reduce(initialVersion) { version, increment in
-                version.apply(increment: increment)
+                version.apply(increment: increment, newSuffix: suffix)
             }
     }
     
