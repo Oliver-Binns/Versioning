@@ -15,7 +15,7 @@ struct Increment: AsyncParsableCommand {
     @Option(name: .long, help: "True if a Git tag should be created but not a GitHub release")
     private var tagOnly: Bool = false
 
-    @Option(name: .long, help: "An optional prefix to prepend to the Git tag (e.g. 'myservice-' produces tags like 'myservice-1.0.0')")
+    @Option(name: .long, help: "An optional prefix for the Git tag (e.g. 'myservice' produces tags like 'myservice-1.0.0')")
     private var tagPrefix: String = ""
 
     @Flag(name: .shortAndLong)

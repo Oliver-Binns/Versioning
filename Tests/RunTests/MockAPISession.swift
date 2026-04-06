@@ -12,7 +12,7 @@ final class MockAPISession: APISession {
     
     func latestRelease() async throws -> String {
         if previousReleaseExists {
-            return "\(tagPrefix)1.0.0"
+            return tagPrefix.isEmpty ? "1.0.0" : "\(tagPrefix)-1.0.0"
         }
         throw GitHubAPIError.notFound
     }

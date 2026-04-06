@@ -78,11 +78,11 @@ final class ReleaserTests: XCTestCase {
     func testReleaseWithTagPrefix() async throws {
         let session = MockAPISession()
         session.previousReleaseExists = true
-        session.tagPrefix = "myservice-"
+        session.tagPrefix = "myservice"
 
         let sha = UUID().uuidString
         let sut = Releaser(session: session)
-        let version = try await sut.makeRelease(sha: sha, tagPrefix: "myservice-")
+        let version = try await sut.makeRelease(sha: sha, tagPrefix: "myservice")
 
         XCTAssertEqual(session.didCallCompare?.0, "myservice-1.0.0")
         XCTAssertEqual(session.didCallCompare?.1, sha)
@@ -99,7 +99,7 @@ final class ReleaserTests: XCTestCase {
 
         let sha = UUID().uuidString
         let sut = Releaser(session: session)
-        let version = try await sut.makeRelease(sha: sha, tagPrefix: "myservice-")
+        let version = try await sut.makeRelease(sha: sha, tagPrefix: "myservice")
 
         XCTAssertEqual(session.didCallCompare?.0, "HEAD^")
         XCTAssertEqual(session.didCallCompare?.1, sha)

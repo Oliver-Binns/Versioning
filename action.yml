@@ -23,7 +23,7 @@ inputs:
     required: false
     default: 'false'
   TAG_PREFIX:
-    description: 'An optional prefix to prepend to the Git tag (e.g. "myservice-" produces tags like "myservice-1.0.0"). Useful for mono-repositories with multiple versioned components.'
+    description: 'An optional prefix for the Git tag (e.g. "myservice" produces tags like "myservice-1.0.0"). Useful for mono-repositories with multiple versioned components.'
     required: false
     default: ''
 
