@@ -78,7 +78,6 @@ final class ReleaserTests: XCTestCase {
     func testReleaseWithTagPrefix() async throws {
         let session = MockAPISession()
         session.previousReleaseExists = true
-        session.tagPrefix = "myservice"
 
         let sha = UUID().uuidString
         let sut = Releaser(session: session)

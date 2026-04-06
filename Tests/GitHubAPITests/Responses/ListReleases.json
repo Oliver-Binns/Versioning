@@ -1,0 +1,16 @@
+[
+  {
+    "id": 2,
+    "tag_name": "myservice-2.0.0",
+    "name": "myservice-2.0.0",
+    "draft": false,
+    "prerelease": false
+  },
+  {
+    "id": 1,
+    "tag_name": "v1.0.0",
+    "name": "v1.0.0",
+    "draft": false,
+    "prerelease": false
+  }
+]

@@ -40,8 +40,26 @@ extension GitHubAPISessionTests {
             
         }
         
-        let release = try await sut.latestRelease()
+        let release = try await sut.latestRelease(tagPrefix: "")
         XCTAssertEqual(release, "v1.0.0")
+    }
+
+    func testLatestReleaseWithPrefix() async throws {
+        let file = try XCTUnwrap(
+            Bundle.module.url(forResource: "ListReleases", withExtension: "json")
+        )
+        MockURLProtocol.requestHandler = { request in
+            XCTAssertEqual(request.httpMethod, "GET")
+            self.verifyHeaders(request: request)
+
+            return try (
+                HTTPURLResponse.success(url: XCTUnwrap(request.url)),
+                Data(contentsOf: file)
+            )
+        }
+
+        let release = try await sut.latestRelease(tagPrefix: "myservice")
+        XCTAssertEqual(release, "myservice-2.0.0")
     }
     
     func testCompare() async throws {

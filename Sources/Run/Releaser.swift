@@ -47,7 +47,7 @@ struct Releaser {
     }
  
     private func fetchVersion(tagPrefix: String) async throws -> Version {
-        let release = try await session.latestRelease()
+        let release = try await session.latestRelease(tagPrefix: tagPrefix)
         let prefixWithSeparator = tagPrefix.isEmpty ? "" : "\(tagPrefix)-"
         let versionString = release.hasPrefix(prefixWithSeparator) ? String(release.dropFirst(prefixWithSeparator.count)) : release
         return Version(string: versionString) ?? Version(0, 0, 0)
