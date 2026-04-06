@@ -23,10 +23,13 @@ extension URL {
             .appending(component: "latest")
     }
     
-    static func listReleases(repository: String) -> URL {
+    static func listReleases(repository: String, page: Int = 1) -> URL {
         var components = URLComponents(url: releases(repository: repository),
                                        resolvingAgainstBaseURL: false)!
-        components.queryItems = [URLQueryItem(name: "per_page", value: "100")]
+        components.queryItems = [
+            URLQueryItem(name: "per_page", value: "100"),
+            URLQueryItem(name: "page", value: "\(page)")
+        ]
         return components.url!
     }
     
