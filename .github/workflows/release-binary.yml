@@ -1,0 +1,29 @@
+name: Build Release Binary
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build macOS Binary
+    runs-on: macos-26
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build Universal Binary
+        run: |
+          swift build -c release --arch arm64
+          swift build -c release --arch x86_64
+          lipo -create -output Run \
+            .build/arm64-apple-macosx/release/Run \
+            .build/x86_64-apple-macosx/release/Run
+
+      - name: Upload Binary to Release
+        run: gh release upload ${{ github.event.release.tag_name }} Run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
