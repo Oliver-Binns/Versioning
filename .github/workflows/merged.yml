@@ -15,10 +15,23 @@ jobs:
     runs-on: macos-26
     permissions:
       contents: write
+    outputs:
+      release_version: ${{ steps.release.outputs.release_version }}
       
     steps:
       - name: Create GitHub release
+        id: release
         uses: Oliver-Binns/Versioning@main
         with:
           ACTION_TYPE: 'Release'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-binary:
+    name: Build release binary
+    needs: build
+    if: needs.build.outputs.release_version != ''
+    uses: ./.github/workflows/release-binary.yml
+    with:
+      tag: ${{ needs.build.outputs.release_version }}
+    permissions:
+      contents: write

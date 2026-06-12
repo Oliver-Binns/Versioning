@@ -8,6 +8,12 @@ on:
       tag:
         description: 'Release tag to upload the binary to (e.g. 1.4.6)'
         required: true
+        type: string
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
 
 jobs:
   build:
