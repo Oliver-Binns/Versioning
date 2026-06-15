@@ -39,8 +39,8 @@ runs:
         # Derive the ref from the action's checkout path (last path component)
         REF=$(basename "${{ github.action_path }}")
         if echo "$REF" | grep -qE '^[0-9a-f]{7,40}$'; then
-          TAG=$(gh api "repos/$GITHUB_ACTION_REPOSITORY/tags" \
-            --jq ".[] | select(.commit.sha | startswith(\"$REF\")) | .name" 2>/dev/null | head -1)
+          TAG=$(curl -fsSL "https://api.github.com/repos/$GITHUB_ACTION_REPOSITORY/tags" \
+            | python3 -c "import sys,json; tags=json.load(sys.stdin); ref='$REF'; print(next((t['name'] for t in tags if t['commit']['sha'].startswith(ref)), ''))")
           [ -n "$TAG" ] && REF="$TAG"
         fi
 
