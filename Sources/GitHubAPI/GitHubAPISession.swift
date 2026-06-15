@@ -25,7 +25,15 @@ public final class GitHubAPISession {
                   repository: repository, apiToken: apiToken)
     }
     
-    public func latestRelease() async throws -> String {
+    public func latestRelease(tagPrefix: String = "") async throws -> String {
+        if tagPrefix.isEmpty {
+            return try await latestReleaseFromLatestEndpoint()
+        } else {
+            return try await latestRelease(withPrefix: "\(tagPrefix)-")
+        }
+    }
+
+    private func latestReleaseFromLatestEndpoint() async throws -> String {
         let (data, response) = try await session
             .data(from: .latestRelease(repository: repository))
         
@@ -43,8 +51,36 @@ public final class GitHubAPISession {
         default:
             throw GitHubAPIError.unknown
         }
-        
-        
+    }
+
+    private func latestRelease(withPrefix prefixWithSeparator: String) async throws -> String {
+        var page = 1
+        while true {
+            let (data, response) = try await session
+                .data(from: .listReleases(repository: repository, page: page))
+
+            guard let response = response as? HTTPURLResponse else {
+                throw GitHubAPIError.unknown
+            }
+
+            guard response.statusCode.isSuccessful else {
+                throw response.statusCode == 404 ? GitHubAPIError.notFound : GitHubAPIError.unknown
+            }
+
+            let releases = try JSONDecoder()
+                .decode([GitHubReleaseResponse].self, from: data)
+
+            if let match = releases.first(where: { $0.tagName.hasPrefix(prefixWithSeparator) }) {
+                return match.tagName
+            }
+
+            // An empty page means there are no more releases to check.
+            guard !releases.isEmpty else {
+                throw GitHubAPIError.notFound
+            }
+
+            page += 1
+        }
     }
     
     public func compare(base: String, head: String) async throws -> [String] {

@@ -22,6 +22,10 @@ inputs:
     description: 'Whether the commit being validated contains a breaking change to the public facing API'
     required: false
     default: 'false'
+  TAG_PREFIX:
+    description: 'An optional prefix for the Git tag (e.g. "myservice" produces tags like "myservice-1.0.0"). Useful for mono-repositories with multiple versioned components.'
+    required: false
+    default: ''
 
 outputs:
   release_version:
@@ -76,6 +80,7 @@ runs:
           --sha $GITHUB_SHA \
           --token ${{inputs.GITHUB_TOKEN}} \
           --tag-only ${{inputs.TAG_ONLY}} \
+          --tag-prefix "${{inputs.TAG_PREFIX}}" \
         )
 
         echo "version=$version" >> $GITHUB_OUTPUT

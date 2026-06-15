@@ -9,9 +9,9 @@ final class MockAPISession: APISession {
     var didCallCreateReference: (String, String)?
     var didCallCreateRelease: String?
     
-    func latestRelease() async throws -> String {
+    func latestRelease(tagPrefix: String) async throws -> String {
         if previousReleaseExists {
-            return "1.0.0"
+            return tagPrefix.isEmpty ? "1.0.0" : "\(tagPrefix)-1.0.0"
         }
         throw GitHubAPIError.notFound
     }

@@ -23,6 +23,16 @@ extension URL {
             .appending(component: "latest")
     }
     
+    static func listReleases(repository: String, page: Int = 1) -> URL {
+        var components = URLComponents(url: releases(repository: repository),
+                                       resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "per_page", value: "100"),
+            URLQueryItem(name: "page", value: "\(page)")
+        ]
+        return components.url!
+    }
+    
     static func references(repository: String) -> URL {
         self.repository(repository: repository)
             .appending(components: "git", "refs")
