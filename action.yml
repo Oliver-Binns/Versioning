@@ -39,13 +39,13 @@ runs:
         # Derive the ref from the action's checkout path (last path component)
         REF=$(basename "${{ github.action_path }}")
         if echo "$REF" | grep -qE '^[0-9a-f]{7,40}$'; then
-          TAG=$(curl -fsSL "https://api.github.com/repos/$GITHUB_ACTION_REPOSITORY/tags" \
+          TAG=$(curl -fsSL "https://api.github.com/repos/Oliver-Binns/Versioning/tags" \
             | python3 -c "import sys,json; tags=json.load(sys.stdin); ref='$REF'; print(next((t['name'] for t in tags if t['commit']['sha'].startswith(ref)), ''))")
           [ -n "$TAG" ] && REF="$TAG"
         fi
 
         if gh release download "$REF" \
-            --repo "$GITHUB_ACTION_REPOSITORY" \
+            --repo "Oliver-Binns/Versioning" \
             --pattern "Run" \
             --output "$BIN_DIR/Run"; then
           echo "Binary downloaded successfully for $REF"
