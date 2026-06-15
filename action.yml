@@ -49,22 +49,14 @@ runs:
         fi
 
         DOWNLOAD_URL="https://github.com/Oliver-Binns/Versioning/releases/download/$REF/Run"
-        if gh release download "$REF" \
-            --repo "Oliver-Binns/Versioning" \
-            --pattern "Run" \
-            --output "$BIN_DIR/Run" 2>/dev/null; then
-          echo "Binary downloaded successfully for $REF (gh)"
-          chmod +x "$BIN_DIR/Run"
-        elif curl -fsSL -o "$BIN_DIR/Run" "$DOWNLOAD_URL"; then
-          echo "Binary downloaded successfully for $REF (curl)"
+        if curl -fsSL -o "$BIN_DIR/Run" "$DOWNLOAD_URL"; then
+          echo "Binary downloaded successfully for $REF"
           chmod +x "$BIN_DIR/Run"
         else
           echo "Binary not available for $REF, falling back to swift build"
           cd "${{ github.action_path }}" && swift build -c release
           cp "${{ github.action_path }}/.build/release/Run" "$BIN_DIR/Run"
         fi
-      env:
-        GH_TOKEN: ${{ inputs.GITHUB_TOKEN || github.token }}
 
     - name: Validate
       if: ${{ inputs.ACTION_TYPE == 'Validate' }}
