@@ -39,15 +39,17 @@ runs:
         # Derive the ref from the action's checkout path (last path component)
         REF=$(basename "${{ github.action_path }}")
         if echo "$REF" | grep -qE '^[0-9a-f]{7,40}$'; then
-          TAG=$(curl -fsSL "https://api.github.com/repos/$GITHUB_ACTION_REPOSITORY/tags" \
-            | python3 -c "import sys,json; tags=json.load(sys.stdin); ref='$REF'; print(next((t['name'] for t in tags if t['commit']['sha'].startswith(ref)), ''))")
-          [ -n "$TAG" ] && REF="$TAG"
+          TAGS_JSON=$(curl -fsSL "https://api.github.com/repos/Oliver-Binns/Versioning/tags" 2>/dev/null || true)
+          if [ -n "$TAGS_JSON" ]; then
+            TAG=$(echo "$TAGS_JSON" | python3 -c "import sys,json; tags=json.load(sys.stdin); ref='$REF'; print(next((t['name'] for t in tags if t['commit']['sha'].startswith(ref)), ''))" 2>/dev/null || true)
+            [ -n "$TAG" ] && REF="$TAG"
+          else
+            echo "Could not resolve SHA $REF to a release tag, will attempt download with SHA"
+          fi
         fi
 
-        if gh release download "$REF" \
-            --repo "$GITHUB_ACTION_REPOSITORY" \
-            --pattern "Run" \
-            --output "$BIN_DIR/Run"; then
+        DOWNLOAD_URL="https://github.com/Oliver-Binns/Versioning/releases/download/$REF/Run"
+        if curl -fsSL -o "$BIN_DIR/Run" "$DOWNLOAD_URL"; then
           echo "Binary downloaded successfully for $REF"
           chmod +x "$BIN_DIR/Run"
         else
@@ -55,8 +57,6 @@ runs:
           cd "${{ github.action_path }}" && swift build -c release
           cp "${{ github.action_path }}/.build/release/Run" "$BIN_DIR/Run"
         fi
-      env:
-        GH_TOKEN: ${{ inputs.GITHUB_TOKEN || github.token }}
 
     - name: Validate
       if: ${{ inputs.ACTION_TYPE == 'Validate' }}
