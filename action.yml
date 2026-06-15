@@ -44,11 +44,15 @@ runs:
           [ -n "$TAG" ] && REF="$TAG"
         fi
 
+        DOWNLOAD_URL="https://github.com/Oliver-Binns/Versioning/releases/download/$REF/Run"
         if gh release download "$REF" \
             --repo "Oliver-Binns/Versioning" \
             --pattern "Run" \
-            --output "$BIN_DIR/Run"; then
-          echo "Binary downloaded successfully for $REF"
+            --output "$BIN_DIR/Run" 2>/dev/null; then
+          echo "Binary downloaded successfully for $REF (gh)"
+          chmod +x "$BIN_DIR/Run"
+        elif curl -fsSL -o "$BIN_DIR/Run" "$DOWNLOAD_URL"; then
+          echo "Binary downloaded successfully for $REF (curl)"
           chmod +x "$BIN_DIR/Run"
         else
           echo "Binary not available for $REF, falling back to swift build"
