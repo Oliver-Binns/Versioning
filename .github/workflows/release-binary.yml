@@ -16,8 +16,8 @@ on:
         type: string
 
 jobs:
-  build-macos:
-    name: Build macOS Binary
+  build:
+    name: Build Binaries
     runs-on: macos-26
     permissions:
       contents: write
@@ -26,7 +26,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Build Universal Binary
+      - name: Install Linux Cross-compilation SDK
+        run: |
+          SWIFT_VERSION=$(swift --version 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          if [ -z "$SWIFT_VERSION" ]; then
+            echo "Failed to detect Swift version" >&2
+            exit 1
+          fi
+          swift sdk install \
+            "https://download.swift.org/swift-${SWIFT_VERSION}-release/static-sdk/swift-${SWIFT_VERSION}-RELEASE/swift-${SWIFT_VERSION}-RELEASE_static-linux-0.0.1.artifactbundle.tar.gz"
+
+      - name: Build macOS Universal Binary
         run: |
           swift build -c release --arch arm64
           swift build -c release --arch x86_64
@@ -34,27 +44,14 @@ jobs:
             .build/arm64-apple-macosx/release/Run \
             .build/x86_64-apple-macosx/release/Run
 
-      - name: Upload Binary to Release
-        run: gh release upload ${{ github.event.release.tag_name || inputs.tag }} Run
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-linux:
-    name: Build Linux Binary
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Build Linux Binary
+      - name: Cross-compile Linux Binary
         run: |
-          swift build -c release
-          cp .build/release/Run Run-linux
+          # Cross-compile for Linux x86_64 using the musl libc static SDK,
+          # producing a fully statically-linked binary that runs on any Linux distro.
+          swift build -c release --swift-sdk x86_64-swift-linux-musl
+          cp .build/x86_64-swift-linux-musl/release/Run Run-linux
 
-      - name: Upload Binary to Release
-        run: gh release upload ${{ github.event.release.tag_name || inputs.tag }} Run-linux
+      - name: Upload Binaries to Release
+        run: gh release upload ${{ github.event.release.tag_name || inputs.tag }} Run Run-linux
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
