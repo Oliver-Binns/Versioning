@@ -16,7 +16,7 @@ on:
         type: string
 
 jobs:
-  build:
+  build-macos:
     name: Build macOS Binary
     runs-on: macos-26
     permissions:
@@ -36,5 +36,25 @@ jobs:
 
       - name: Upload Binary to Release
         run: gh release upload ${{ github.event.release.tag_name || inputs.tag }} Run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    name: Build Linux Binary
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Build Linux Binary
+        run: |
+          swift build -c release
+          cp .build/release/Run Run-linux
+
+      - name: Upload Binary to Release
+        run: gh release upload ${{ github.event.release.tag_name || inputs.tag }} Run-linux
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
