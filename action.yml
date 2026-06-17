@@ -48,7 +48,14 @@ runs:
           fi
         fi
 
-        DOWNLOAD_URL="https://github.com/Oliver-Binns/Versioning/releases/download/$REF/Run"
+        OS=$(uname -s)
+        if [ "$OS" = "Darwin" ]; then
+          BINARY_NAME="Run"
+        else
+          BINARY_NAME="Run-linux"
+        fi
+
+        DOWNLOAD_URL="https://github.com/Oliver-Binns/Versioning/releases/download/$REF/$BINARY_NAME"
         if curl -fsSL -o "$BIN_DIR/Run" "$DOWNLOAD_URL"; then
           echo "Binary downloaded successfully for $REF"
           chmod +x "$BIN_DIR/Run"
