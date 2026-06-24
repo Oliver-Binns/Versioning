@@ -112,6 +112,52 @@ extension GitHubAPISessionTests {
         try await sut.createRelease(version: version)
     }
     
+    func testCreateRelease_prereleaseBody_true() async throws {
+        let version = UUID().uuidString
+        
+        let file = try XCTUnwrap(
+            Bundle.module.url(forResource: "LatestRelease", withExtension: "json")
+        )
+        MockURLProtocol.requestHandler = { request in
+            XCTAssertEqual(request.httpMethod, "POST")
+            
+            let releaseBody = try XCTUnwrap(request.httpBodyData())
+            let releaseRequest = try JSONDecoder().decode(CreateReleaseRequest.self, from: releaseBody)
+            XCTAssertTrue(releaseRequest.prerelease)
+
+            return try (
+                HTTPURLResponse.success(url: XCTUnwrap(request.url)),
+                Data(contentsOf: file)
+            )
+            
+        }
+        
+        try await sut.createRelease(version: version, prerelease: true)
+    }
+    
+    func testCreateRelease_prereleaseBody_false() async throws {
+        let version = UUID().uuidString
+        
+        let file = try XCTUnwrap(
+            Bundle.module.url(forResource: "LatestRelease", withExtension: "json")
+        )
+        MockURLProtocol.requestHandler = { request in
+            XCTAssertEqual(request.httpMethod, "POST")
+            
+            let releaseBody = try XCTUnwrap(request.httpBodyData())
+            let releaseRequest = try JSONDecoder().decode(CreateReleaseRequest.self, from: releaseBody)
+            XCTAssertFalse(releaseRequest.prerelease)
+
+            return try (
+                HTTPURLResponse.success(url: XCTUnwrap(request.url)),
+                Data(contentsOf: file)
+            )
+            
+        }
+        
+        try await sut.createRelease(version: version, prerelease: false)
+    }
+    
     func verifyHeaders(request: URLRequest,
                        file: StaticString = #filePath,
                        line: UInt = #line) {
@@ -131,3 +177,24 @@ extension GitHubAPISessionTests {
     }
 }
 
+extension URLRequest {
+    public func httpBodyData() -> Data? {
+        guard let bodyStream = self.httpBodyStream else { return nil }
+        
+        bodyStream.open()
+        
+        let bufferSize: Int = 16
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
+        
+        var data = Data()
+        
+        while bodyStream.hasBytesAvailable {
+            let readData = bodyStream.read(buffer, maxLength: bufferSize)
+            data.append(buffer, count: readData)
+        }
+        
+        buffer.deallocate()
+        bodyStream.close()
+        return data
+    }
+}

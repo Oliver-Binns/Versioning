@@ -1,6 +1,6 @@
 import Foundation
 
-struct CreateReleaseRequest: Encodable {
+struct CreateReleaseRequest: Codable {
     let name: String
     let tagName: String
     let draft: Bool
